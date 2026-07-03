@@ -53,3 +53,34 @@ footer {
   height: auto;
   border-radius: 5px;
 }
+.org-list {
+  margin-top: 20px;
+}
+
+.org-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.org-card img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.org-card h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.org-card p {
+  margin: 5px 0 0;
+  color: #555;
+}
