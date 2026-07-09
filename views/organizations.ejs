@@ -5,31 +5,19 @@
 <p>Here are a few of our partner organizations:</p>
 
 <div class="org-list">
-
-  <div class="org-card">
-    <img src="/images/redcross.jpg" alt="Red Cross">
-    <div>
-      <h3>Red Cross</h3>
-      <p>help@redcross.org</p>
-    </div>
-  </div>
-
-  <div class="org-card">
-    <img src="/images/unicef.jpg" alt="UNICEF">
-    <div>
-      <h3>UNICEF</h3>
-      <p>contact@unicef.org</p>
-    </div>
-  </div>
-
-  <div class="org-card">
-    <img src="/images/habitat.jpg" alt="Habitat for Humanity">
-    <div>
-      <h3>Habitat for Humanity</h3>
-      <p>info@habitat.org</p>
-    </div>
-  </div>
-
+  <% if (organizations && organizations.length > 0) { %>
+    <% organizations.forEach(org => { %>
+      <div class="org-card">
+        <img src="<%= org.image_url || '/images/default-org.jpg' %>" alt="<%= org.name %>">
+        <div>
+          <h3><%= org.name %></h3>
+          <p><%= org.email %></p>
+        </div>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No partner organizations found in the database.</p>
+  <% } %>
 </div>
 
 <%- include("partials/footer") %>

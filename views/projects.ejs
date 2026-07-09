@@ -2,10 +2,21 @@
 
 <h2><%= title %></h2>
 
-<ul>
-  <li>Beach Cleanup</li>
-  <li>Food Drive</li>
-  <li>Tutoring Program</li>
-</ul>
+<div class="projects-list">
+  <% if (projects && projects.length > 0) { %>
+    <% projects.forEach(project => { %>
+      <div class="project-card" style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+        <h3><%= project.title %></h3>
+        <p><strong>Organization:</strong> <%= project.organization_name %></p>
+        <p><strong>Date:</strong> <%= project.project_date %></p>
+        <p><strong>Location:</strong> <%= project.location %></p>
+        <p><strong>Description:</strong> <%= project.description %></p>
+        <p><strong>Categories:</strong> <span class="tag" style="background: #eee; padding: 2px 6px; border-radius: 4px;"><%= project.categories %></span></p>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No service projects found in the database.</p>
+  <% } %>
+</div>
 
 <%- include("partials/footer") %>

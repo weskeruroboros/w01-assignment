@@ -1,10 +1,6 @@
-import pool from "../database.js";
+import pool from "../../database.js";
 
 export async function getAllOrganizations() {
-  const result = await pool.query(`
-    SELECT * FROM organizations
-    ORDER BY name
-  `);
-
+  const result = await pool.query(`SELECT * FROM organizations ORDER BY name;`);
   return result.rows;
 }

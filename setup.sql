@@ -19,9 +19,7 @@ CREATE TABLE projects (
   description TEXT,
   location VARCHAR(100),
   project_date DATE NOT NULL,
-
-  FOREIGN KEY (organization_id)
-    REFERENCES organizations(organization_id)
+  FOREIGN KEY (organization_id) REFERENCES organizations(organization_id)
 );
 
 -- CATEGORIES
@@ -34,48 +32,32 @@ CREATE TABLE categories (
 CREATE TABLE project_categories (
   project_id INT NOT NULL,
   category_id INT NOT NULL,
-
   PRIMARY KEY (project_id, category_id),
-
-  FOREIGN KEY (project_id)
-    REFERENCES projects(project_id)
-    ON DELETE CASCADE,
-
-  FOREIGN KEY (category_id)
-    REFERENCES categories(category_id)
-    ON DELETE CASCADE
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
 
--- SAMPLE ORGANIZATIONS
-INSERT INTO organizations (name, email, image_url)
-VALUES
+-- SAMPLE ORGANIZATIONS (Generates structural IDs: 1, 2, 3)
+INSERT INTO organizations (name, email, image_url) VALUES
 ('Red Cross', 'help@redcross.org', '/images/redcross.jpg'),
 ('UNICEF', 'contact@unicef.org', '/images/unicef.jpg'),
 ('Habitat for Humanity', 'info@habitat.org', '/images/habitat.jpg');
 
--- SAMPLE PROJECTS
-INSERT INTO projects (organization_id, title, description, location, project_date)
-VALUES
+-- SAMPLE PROJECTS (Aligned to valid organizational matching IDs)
+INSERT INTO projects (organization_id, title, description, location, project_date) VALUES
 (1, 'Community Cleanup', 'Cleaning local parks', 'Duhok', '2026-08-10'),
 (1, 'Food Drive', 'Collecting food donations', 'Zakho', '2026-08-15'),
 (2, 'School Support', 'Support education programs', 'Erbil', '2026-08-20'),
 (3, 'Home Building', 'Build homes for families', 'Duhok', '2026-09-01'),
 (2, 'Health Awareness', 'Health education campaign', 'Mosul', '2026-09-10');
 
--- SAMPLE CATEGORIES
-INSERT INTO categories (name)
-VALUES
+-- SAMPLE CATEGORIES (Generates structural IDs: 1, 2, 3, 4)
+INSERT INTO categories (name) VALUES
 ('Environmental'),
 ('Education'),
 ('Health'),
 ('Community Service');
 
--- PROJECT ↔ CATEGORY LINKS
-INSERT INTO project_categories (project_id, category_id)
-VALUES
-(1,1),
-(1,4),
-(2,4),
-(3,2),
-(4,4),
-(5,3);
+-- PROJECT CATEGORY LINKS
+INSERT INTO project_categories (project_id, category_id) VALUES
+(1,1), (1,4), (2,4), (3,2), (4,4), (5,3);
