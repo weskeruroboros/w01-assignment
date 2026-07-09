@@ -1,7 +1,5 @@
 import 'dotenv/config'; // 🌟 Added to load environment variables before database calls
 import express from "express";
-import fs from "fs";
-import path from "path";
 import pool from "./database.js";
 import { getAllProjects } from "./src/models/projects.js";
 import { getAllCategories } from "./src/models/categories.js";
@@ -12,19 +10,8 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-// 🌟 AUTOMATIC BACKGROUND DATABASE BLUEPRINT INITIALIZER
-async function autoSeedDatabase() {
-  try {
-    console.log("Checking database schema setup...");
-    const sqlPath = path.join(process.cwd(), "setup.sql");
-    const sqlScript = fs.readFileSync(sqlPath, "utf8");
-    await pool.query(sqlScript);
-    console.log("✨ SUCCESS: Cloud database tables built and loaded cleanly!");
-  } catch (err) {
-    console.error("❌ Database initialization error:", err.message);
-  }
-}
-await autoSeedDatabase();
+// 🛑 REMOVED THE DUPLICATE autoSeedDatabase() FUNCTION FROM HERE 
+// Because database.js is already running it cleanly!
 
 /* HOME */
 app.get("/", (req, res) => {
