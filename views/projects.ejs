@@ -6,12 +6,33 @@
   <% if (projects && projects.length > 0) { %>
     <% projects.forEach(project => { %>
       <div class="project-card" style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-        <h3><%= project.title %></h3>
-        <p><strong>Organization:</strong> <%= project.organization_name %></p>
+        <h3><a href="/project/<%= project.project_id %>"><%= project.title %></a></h3>
+        
+        <p><strong>Organization:</strong> 
+          <a href="/organization/<%= project.organization_id %>">
+            <%= project.organization_name %>
+          </a>
+        </p>
+        
         <p><strong>Date:</strong> <%= project.project_date %></p>
         <p><strong>Location:</strong> <%= project.location %></p>
         <p><strong>Description:</strong> <%= project.description %></p>
-        <p><strong>Categories:</strong> <span class="tag" style="background: #eee; padding: 2px 6px; border-radius: 4px;"><%= project.categories %></span></p>
+        
+        <p><strong>Categories:</strong> 
+          <% if (project.categories) { %>
+            <% 
+              const catArray = project.categories.split(','); 
+              const idArray = project.category_ids ? project.category_ids.split(',') : [];
+            %>
+            <% catArray.forEach((catName, index) => { %>
+              <a href="/category/<%= idArray[index] %>" class="tag" style="background: #003366; color: #fff; padding: 3px 8px; border-radius: 4px; text-decoration: none; margin-right: 5px; display: inline-block; font-size: 0.85rem;">
+                <%= catName.trim() %>
+              </a>
+            <% }) %>
+          <% } else { %>
+            <span style="color: #666; font-style: italic;">Uncategorized</span>
+          <% } %>
+        </p>
       </div>
     <% }) %>
   <% } else { %>

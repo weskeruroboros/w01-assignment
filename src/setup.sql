@@ -25,7 +25,8 @@ CREATE TABLE projects (
 -- CATEGORIES
 CREATE TABLE categories (
   category_id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL UNIQUE
+  name VARCHAR(100) NOT NULL UNIQUE,
+  description TEXT
 );
 
 -- JUNCTION TABLE (MANY TO MANY)
@@ -37,13 +38,13 @@ CREATE TABLE project_categories (
   FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
 );
 
--- SAMPLE ORGANIZATIONS (Generates structural IDs: 1, 2, 3)
+-- SAMPLE ORGANIZATIONS
 INSERT INTO organizations (name, email, image_url) VALUES
 ('Red Cross', 'help@redcross.org', '/images/redcross.jpg'),
 ('UNICEF', 'contact@unicef.org', '/images/unicef.jpg'),
 ('Habitat for Humanity', 'info@habitat.org', '/images/habitat.jpg');
 
--- SAMPLE PROJECTS (Aligned to valid organizational matching IDs)
+-- SAMPLE PROJECTS
 INSERT INTO projects (organization_id, title, description, location, project_date) VALUES
 (1, 'Community Cleanup', 'Cleaning local parks', 'Duhok', '2026-08-10'),
 (1, 'Food Drive', 'Collecting food donations', 'Zakho', '2026-08-15'),
@@ -51,12 +52,12 @@ INSERT INTO projects (organization_id, title, description, location, project_dat
 (3, 'Home Building', 'Build homes for families', 'Duhok', '2026-09-01'),
 (2, 'Health Awareness', 'Health education campaign', 'Mosul', '2026-09-10');
 
--- SAMPLE CATEGORIES (Generates structural IDs: 1, 2, 3, 4)
-INSERT INTO categories (name) VALUES
-('Environmental'),
-('Education'),
-('Health'),
-('Community Service');
+-- SAMPLE CATEGORIES
+INSERT INTO categories (name, description) VALUES
+('Environmental', 'Protecting ecosystems, planting trees, and managing urban cleanups.'),
+('Education', 'Tutoring, establishing student support systems, and supplying materials.'),
+('Health', 'Spreading medical awareness, hosting vaccination clinics, and wellness courses.'),
+('Community Service', 'Bringing localized groups together to improve public infrastructure.');
 
 -- PROJECT CATEGORY LINKS
 INSERT INTO project_categories (project_id, category_id) VALUES

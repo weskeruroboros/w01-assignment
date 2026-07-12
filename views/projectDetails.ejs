@@ -1,0 +1,32 @@
+<%- include("partials/header") %>
+
+<div class="project-details" style="margin-top: 20px;">
+  <h2><%= project.title %></h2>
+  <p><strong>Date:</strong> <%= project.project_date %></p>
+  <p><strong>Location:</strong> <%= project.location %></p>
+  
+  <p><strong>Partner Organization:</strong> 
+    <a href="/organization/<%= project.organization_id %>" style="color: #003366; font-weight: bold;">
+      <%= project.organization_name %>
+    </a>
+  </p>
+
+  <p><strong>Description:</strong> <%= project.description %></p>
+
+  <div class="project-tags" style="margin-top: 25px;">
+    <strong>Tags / Categories:</strong>
+    <div style="display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap;">
+      <% if (categories && categories.length > 0) { %>
+        <% categories.forEach(cat => { %>
+          <a href="/category/<%= cat.category_id %>" style="background-color: #003366; color: #fff; padding: 4px 10px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: 500;">
+            <%= cat.name %>
+          </a>
+        <% }) %>
+      <% } else { %>
+        <span style="color: #777; font-style: italic;">No tags assigned.</span>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include("partials/footer") %>

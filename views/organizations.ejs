@@ -7,12 +7,21 @@
 <div class="org-list">
   <% if (organizations && organizations.length > 0) { %>
     <% organizations.forEach(org => { %>
-      <div class="org-card">
-        <img src="<%= org.image_url || '/images/default-org.jpg' %>" alt="<%= org.name %>">
+      <div class="org-card" style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 15px;">
+        
+        <a href="/organization/<%= org.organization_id %>" class="org-image-link">
+          <img src="<%= org.image_url || '/images/default-org.jpg' %>" alt="<%= org.name %>" style="width: 120px; height: auto; border-radius: 4px;">
+        </a>
+        
         <div>
-          <h3><%= org.name %></h3>
-          <p><%= org.email %></p>
+          <h3>
+            <a href="/organization/<%= org.organization_id %>" class="org-title-link">
+              <%= org.name %>
+            </a>
+          </h3>
+          <p><strong>Email:</strong> <%= org.email %></p>
         </div>
+
       </div>
     <% }) %>
   <% } else { %>

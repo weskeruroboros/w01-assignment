@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. ORIGINAL BASE STYLES (Your Provided Code)
+   ========================================================================== */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -24,8 +27,15 @@ nav a {
   text-decoration: none;
 }
 
+nav a:hover {
+  text-decoration: underline;
+}
+
 main {
   padding: 20px;
+  max-width: 1000px; /* Centers and cleans up wide monitor layouts */
+  margin: 0 auto;
+  min-height: 80vh; /* Keeps footer pushed down on short pages */
 }
 
 footer {
@@ -53,6 +63,7 @@ footer {
   height: auto;
   border-radius: 5px;
 }
+
 .org-list {
   margin-top: 20px;
 }
@@ -83,4 +94,89 @@ footer {
 .org-card p {
   margin: 5px 0 0;
   color: #555;
+}
+
+/* ==========================================================================
+   2. BRAND NEW ASSIGNMENT DETAILS & TAG STYLES
+   ========================================================================== */
+
+/* Universal Link Styling inside text */
+main a {
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+main a:hover {
+  color: #3498db;
+}
+
+/* Project Cards & Details Containers */
+.project-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.project-card h3, .project-card h4 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.project-details, .category-details, .org-details {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-top: 20px;
+}
+
+/* Relational Categories / Pill Tags */
+.project-tags {
+  margin-top: 20px;
+}
+
+.tag {
+  background-color: #2c3e50 !important; /* Forces your primary theme color onto tags */
+  color: white !important;
+  padding: 6px 12px !important;
+  border-radius: 20px !important; /* Rounded pill style */
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: inline-block;
+  transition: background 0.2s ease-in-out;
+}
+
+.tag:hover {
+  background-color: #3498db !important; /* Highlighting feedback effect */
+  color: white !important;
+}
+
+/* Categories List Styling */
+.categories-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.categories-list li {
+  background: white;
+  margin-bottom: 10px;
+  padding: 15px 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: transform 0.15s ease-in-out;
+}
+
+.categories-list li:hover {
+  transform: translateX(5px); /* Subtle indentation on hover */
+  border-color: #3498db;
+}
+
+.categories-list a {
+  font-size: 1.2rem;
+  text-decoration: none;
 }

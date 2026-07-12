@@ -1,57 +1,43 @@
-import 'dotenv/config'; // 🌟 Added to load environment variables before database calls
+import 'dotenv/config'; 
 import express from "express";
-import pool from "./database.js";
-import { getAllProjects } from "./src/models/projects.js";
-import { getAllCategories } from "./src/models/categories.js";
-import { getAllOrganizations } from "./src/models/organizations.js";
+import path from "path";
+import projectRoutes from "./src/routes/projectRoutes.js";
+import organizationRoutes from "./src/routes/organizationRoutes.js";
+import categoryRoutes from "./src/routes/categoryRoutes.js";
 
 const app = express();
 
+// Configure template rendering engine
 app.set("view engine", "ejs");
+app.set("views", path.join(process.cwd(), "views"));
+
+// Serve static elements like style.css from the public folder
 app.use(express.static("public"));
 
-// 🛑 REMOVED THE DUPLICATE autoSeedDatabase() FUNCTION FROM HERE 
-// Because database.js is already running it cleanly!
-
-/* HOME */
+/* MAIN DASHBOARD ROUTES */
 app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });
 
-/* ORGANIZATIONS */
-app.get("/organizations", async (req, res) => {
-  try {
-    const organizations = await getAllOrganizations();
-    res.render("organizations", { title: "Organizations", organizations });
-  } catch (error) {
-    console.error("❌ ERROR /organizations:", error.message);
-    res.status(500).send("Database Error");
-  }
+/* REGISTERED MVC ROUTERS */
+app.use(projectRoutes);
+app.use(organizationRoutes);
+app.use(categoryRoutes);
+
+/* GLOBAL 404 ROUTE */
+app.use((req, res, next) => {
+  // Gracefully falls back to home template if an unrecognized URL is processed
+  res.status(404).render("home", { title: "404 - Page Not Found" }); 
 });
 
-/* PROJECTS */
-app.get("/projects", async (req, res) => {
-  try {
-    const projects = await getAllProjects();
-    res.render("projects", { title: "Service Projects", projects });
-  } catch (error) {
-    console.error("❌ ERROR /projects:", error.message);
-    res.status(500).send("Database Error");
-  }
+/* GLOBAL 500 ROUTE */
+app.use((err, req, res, next) => {
+  console.error("❌ SERVER ERROR DETECTED:", err.stack);
+  res.status(500).send("<h3>Internal Server Error (500)</h3><p>Check console logs for details.</p>");
 });
 
-/* CATEGORIES */
-app.get("/categories", async (req, res) => {
-  try {
-    const categories = await getAllCategories();
-    res.render("categories", { title: "Service Project Categories", categories });
-  } catch (error) {
-    console.error("❌ ERROR /categories:", error.message);
-    res.status(500).send("Database Error");
-  }
-});
-
+// Start the framework engine locally
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server running smoothly on http://localhost:${PORT}`);
+  console.log(`🚀 Server running smoothly on http://localhost:${PORT}`);
 });
