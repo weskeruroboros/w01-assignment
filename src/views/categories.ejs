@@ -1,0 +1,36 @@
+<%- include("partials/header") %>
+
+<h2>Cause Categories</h2>
+
+<a href="/categories/new" class="btn">+ Add New Category</a>
+
+<ul>
+  <% if (typeof categories !== "undefined" && categories.length > 0) { %>
+    <% categories.forEach(category => { %>
+      <% const catId = category.id || category._id || category.category_id; %>
+      <li>
+        <a href="/categories/<%= catId %>"><%= category.name %></a>
+        <p><%= category.description %></p>
+        
+        <div class="card-actions">
+          <!-- Edit Action -->
+          <a href="/categories/<%= catId %>/edit" class="btn-sm">Edit</a>
+          
+          <!-- Delete Action Form -->
+          <form 
+            action="/categories/<%= catId %>/delete" 
+            method="POST" 
+            class="inline-form" 
+            onsubmit="return confirm('Are you sure you want to remove this category?');"
+          >
+            <button type="submit" class="btn-danger">Remove</button>
+          </form>
+        </div>
+      </li>
+    <% }) %>
+  <% } else { %>
+    <p>No categories found.</p>
+  <% } %>
+</ul>
+
+<%- include("partials/footer") %>

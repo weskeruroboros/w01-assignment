@@ -1,43 +1,59 @@
-import 'dotenv/config'; 
 import express from "express";
 import path from "path";
-import projectRoutes from "./src/routes/projectRoutes.js";
-import organizationRoutes from "./src/routes/organizationRoutes.js";
+import { fileURLToPath } from "url";
+import session from "express-session";
+import flash from "connect-flash";
+
+// Import your routes
 import categoryRoutes from "./src/routes/categoryRoutes.js";
+import organizationRoutes from "./src/routes/organizationRoutes.js";
+import projectRoutes from "./src/routes/projectRoutes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Configure template rendering engine
+// View engine setup
 app.set("view engine", "ejs");
-app.set("views", path.join(process.cwd(), "views"));
+app.set("views", path.join(__dirname, "src", "views"));
 
-// Serve static elements like style.css from the public folder
-app.use(express.static("public"));
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-/* MAIN DASHBOARD ROUTES */
+// CRITICAL: Serves static files (images, css, js) from the "public" folder
+app.use(express.static(path.join(__dirname, "public")));
+
+// Session & Flash messaging setup
+app.use(
+  session({
+    secret: "your_secret_key_here",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(flash());
+
+// Global variables for flash messages and views
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
+
+// Mount Routes
+app.use(categoryRoutes);
+app.use(organizationRoutes);
+app.use(projectRoutes);
+
+// Home route
 app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });
 
-/* REGISTERED MVC ROUTERS */
-app.use(projectRoutes);
-app.use(organizationRoutes);
-app.use(categoryRoutes);
-
-/* GLOBAL 404 ROUTE */
-app.use((req, res, next) => {
-  // Gracefully falls back to home template if an unrecognized URL is processed
-  res.status(404).render("home", { title: "404 - Page Not Found" }); 
-});
-
-/* GLOBAL 500 ROUTE */
-app.use((err, req, res, next) => {
-  console.error("❌ SERVER ERROR DETECTED:", err.stack);
-  res.status(500).send("<h3>Internal Server Error (500)</h3><p>Check console logs for details.</p>");
-});
-
-// Start the framework engine locally
-const PORT = 3000;
+// Server Listen
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running smoothly on http://localhost:${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });

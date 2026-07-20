@@ -1,6 +1,5 @@
-import pool from "../../database.js";
+import pool from "../config/pool.js";
 
-// Fetch all projects for the main list page (including separated category arrays)
 export async function getAllProjects() {
   const result = await pool.query(`
     SELECT
@@ -9,21 +8,20 @@ export async function getAllProjects() {
       p.description,
       p.location,
       TO_CHAR(p.project_date, 'YYYY-MM-DD') AS project_date,
-      p.organization_id,              
+      p.organization_id,            
       o.name AS organization_name,
-      STRING_AGG(c.name, ',') AS categories,      
-      STRING_AGG(CAST(c.category_id AS TEXT), ',') AS category_ids 
+      STRING_AGG(DISTINCT c.name, ',') AS categories,      
+      STRING_AGG(DISTINCT c.category_id::TEXT, ',') AS category_ids 
     FROM projects p
     LEFT JOIN organizations o ON p.organization_id = o.organization_id
     LEFT JOIN project_categories pc ON p.project_id = pc.project_id
     LEFT JOIN categories c ON pc.category_id = c.category_id
-    GROUP BY p.project_id, o.name, p.organization_id
-    ORDER BY p.project_date;
+    GROUP BY p.project_id, o.name, o.organization_id
+    ORDER BY p.project_date ASC;
   `);
   return result.rows;
 }
 
-// Fetch a single service project by its ID
 export async function getProjectById(projectId) {
   const result = await pool.query(`
     SELECT 
@@ -38,10 +36,10 @@ export async function getProjectById(projectId) {
     LEFT JOIN organizations o ON p.organization_id = o.organization_id
     WHERE p.project_id = $1;
   `, [projectId]);
-  return result.rows[0];
+  
+  return result.rows[0] || null;
 }
 
-// Fetch all individual categories assigned to a specific project
 export async function getCategoriesByProject(projectId) {
   const result = await pool.query(`
     SELECT c.category_id, c.name
@@ -49,5 +47,34 @@ export async function getCategoriesByProject(projectId) {
     JOIN project_categories pc ON c.category_id = pc.category_id
     WHERE pc.project_id = $1;
   `, [projectId]);
+  
   return result.rows;
+}
+
+export async function updateProjectCategories(projectId, categoryIds = []) {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    
+    // Clear existing assignments
+    await client.query("DELETE FROM project_categories WHERE project_id = $1;", [projectId]);
+
+    // Insert new selected assignments
+    const ids = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
+    for (const catId of ids) {
+      if (catId) {
+        await client.query(
+          "INSERT INTO project_categories (project_id, category_id) VALUES ($1, $2);",
+          [projectId, catId]
+        );
+      }
+    }
+    
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
 }

@@ -1,6 +1,9 @@
-import { getAllOrganizations, getOrganizationById, getProjectsByOrganization } from "../models/organizations.js";
+import { 
+  getAllOrganizations, 
+  getOrganizationById, 
+  getProjectsByOrganization 
+} from "../models/organizations.js";
 
-// Display all partner organizations
 export async function getOrganizations(req, res, next) {
   try {
     const organizations = await getAllOrganizations();
@@ -10,10 +13,16 @@ export async function getOrganizations(req, res, next) {
   }
 }
 
-// Display details for a single organization
 export async function getOrganizationDetails(req, res, next) {
   try {
     const orgId = req.params.id;
+
+    if (isNaN(orgId)) {
+      const err = new Error("Invalid Organization ID");
+      err.status = 400;
+      return next(err);
+    }
+
     const organization = await getOrganizationById(orgId);
     
     if (!organization) {
@@ -21,9 +30,14 @@ export async function getOrganizationDetails(req, res, next) {
       err.status = 404;
       return next(err);
     }
-    
+
     const projects = await getProjectsByOrganization(orgId);
-    res.render("organizationDetails", { title: organization.name, organization, projects });
+    
+    res.render("organizationDetails", { 
+      title: organization.name, 
+      organization, 
+      projects 
+    });
   } catch (error) { 
     next(error); 
   }

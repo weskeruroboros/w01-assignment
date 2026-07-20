@@ -1,0 +1,23 @@
+<%- include("partials/header") %>
+
+<h2>Category: <%= category.name %></h2>
+<p><%= category.description %></p>
+
+<div style="margin-bottom: 20px;">
+  <a href="/edit-category/<%= category.category_id %>" class="btn btn-secondary">Edit Category</a>
+</div>
+
+<h3>Associated Projects</h3>
+<% if (projects && projects.length > 0) { %>
+  <ul>
+    <% projects.forEach(p => { %>
+      <li>
+        <a href="/project/<%= p.project_id %>"><strong><%= p.title %></strong></a> - <%= p.project_date %>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>No projects are currently assigned to this category.</p>
+<% } %>
+
+<%- include("partials/footer") %>

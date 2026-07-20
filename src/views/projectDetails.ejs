@@ -1,0 +1,28 @@
+<%- include("partials/header") %>
+
+<article class="project-details">
+  <h2><%= project.title %></h2>
+  <p><strong>Organization:</strong> <%= project.organization_name %></p>
+  <p><strong>Location:</strong> <%= project.location %></p>
+  <p><strong>Date:</strong> <%= project.project_date %></p>
+  <p><strong>Description:</strong> <%= project.description %></p>
+
+  <h3>Assigned Categories</h3>
+  <% if (categories && categories.length > 0) { %>
+    <ul>
+      <% categories.forEach(cat => { %>
+        <li><a href="/category/<%= cat.category_id %>"><%= cat.name %></a></li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No categories assigned yet.</p>
+  <% } %>
+
+  <div style="margin-top: 20px;">
+    <a href="/project/<%= project.project_id %>/assign-categories" class="btn btn-primary">
+      Assign / Update Categories
+    </a>
+  </div>
+</article>
+
+<%- include("partials/footer") %>

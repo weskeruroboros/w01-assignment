@@ -1,0 +1,30 @@
+<%- include("partials/header") %>
+
+<h2>Edit Category</h2>
+
+<% const catId = category.id || category._id || category.category_id; %>
+
+<form action="/categories/<%= catId %>" method="POST">
+  <div>
+    <label for="name">Category Name:</label>
+    <input 
+      type="text" 
+      id="name" 
+      name="name" 
+      value="<%= category.name %>" 
+      required
+    >
+  </div>
+
+  <div>
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required><%= category.description %></textarea>
+  </div>
+
+  <div style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem;">
+    <button type="submit">Update Category</button>
+    <a href="/categories" class="btn-sm" style="background-color: var(--text-muted); color: white !important; text-decoration: none; padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); font-weight: 600;">Cancel</a>
+  </div>
+</form>
+
+<%- include("partials/footer") %>

@@ -1,18 +1,17 @@
-import pg from 'pg';
-import dotenv from 'dotenv';
+import pg from "pg";
+import dotenv from "dotenv";
 
-// Load the environment variables
 dotenv.config();
 
 const { Pool } = pg;
 
-// Connect using the connection string from your environment
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.DATABASE_URL?.includes("render.com");
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // 🔒 SSL encryption is required to connect to Render from your local computer
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
 
 export default pool;

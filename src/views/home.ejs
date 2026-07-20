@@ -1,0 +1,15 @@
+<%- include("partials/header") %>
+
+<h2>Welcome to the Service Learning Directory</h2>
+<p><%= typeof message !== "undefined" ? message : "Explore service projects, partner organizations, and cause categories." %></p>
+
+<!-- Main Banner Image -->
+<img src="/images/home.jpg" alt="Service Learning Community" class="main-img" />
+
+<div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+  <a href="/projects" class="tag" style="font-size: 1rem; padding: 10px 18px;">View Projects</a>
+  <a href="/organizations" class="tag" style="font-size: 1rem; padding: 10px 18px;">View Organizations</a>
+  <a href="/categories" class="tag" style="font-size: 1rem; padding: 10px 18px;">View Categories</a>
+</div>
+
+<%- include("partials/footer") %>

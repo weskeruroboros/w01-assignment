@@ -1,0 +1,19 @@
+<%- include("partials/header") %>
+
+<h2><%= organization.name %></h2>
+<p><strong>Email:</strong> <%= organization.email %></p>
+
+<h3>Projects by this Organization</h3>
+<% if (projects && projects.length > 0) { %>
+  <ul>
+    <% projects.forEach(p => { %>
+      <li>
+        <a href="/project/<%= p.project_id %>"><strong><%= p.title %></strong></a> - <%= p.project_date %>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>No projects associated with this organization.</p>
+<% } %>
+
+<%- include("partials/footer") %>

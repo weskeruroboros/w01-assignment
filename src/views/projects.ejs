@@ -1,0 +1,20 @@
+<%- include("partials/header") %>
+
+<h2>Service Projects</h2>
+
+<% if (projects && projects.length > 0) { %>
+  <div class="grid-container">
+    <% projects.forEach(p => { %>
+      <div class="card">
+        <h3><a href="/project/<%= p.project_id %>"><%= p.title %></a></h3>
+        <p><strong>Organization:</strong> <%= p.organization_name %></p>
+        <p><strong>Date:</strong> <%= p.project_date %></p>
+        <p><strong>Categories:</strong> <%= p.categories || 'None' %></p>
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <p>No projects found.</p>
+<% } %>
+
+<%- include("partials/footer") %>

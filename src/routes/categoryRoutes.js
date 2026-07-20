@@ -1,12 +1,24 @@
 import express from "express";
-import { getCategories, getCategoryDetails } from "../controllers/categoryController.js";
+import { 
+  getCategories, 
+  getNewCategoryForm, 
+  createCategory, 
+  getEditCategoryForm, 
+  updateCategory, 
+  deleteCategory 
+} from "../controllers/categoryController.js";
 
 const router = express.Router();
 
-// Route for the main categories list page
-router.get("/categories", getCategories);
+// Specific routes must come BEFORE dynamic routes (like /categories/:id)
+router.get("/new-category", getNewCategoryForm);
+router.get("/categories/new", getNewCategoryForm);
 
-// Route for a single category details page (e.g., /category/1)
-router.get("/category/:id", getCategoryDetails);
+router.get("/categories", getCategories);
+router.post("/categories", createCategory);
+
+router.get("/categories/:id/edit", getEditCategoryForm);
+router.post("/categories/:id", updateCategory);
+router.post("/categories/:id/delete", deleteCategory);
 
 export default router;
