@@ -51,8 +51,14 @@ export function renderNewOrganizationForm(req, res) {
 
 export async function handleCreateOrganization(req, res, next) {
   try {
-    const { name, description, location } = req.body;
-    await createOrganization({ name, description, location });
+    const { name, email, image_url } = req.body;
+    
+    if (!name || name.trim() === "" || !email || email.trim() === "") {
+      req.flash("error", "Name and email are required fields.");
+      return res.redirect("back");
+    }
+
+    await createOrganization({ name, email, image_url });
     req.flash("success", "Organization created successfully!");
     res.redirect("/organizations");
   } catch (error) {
@@ -77,8 +83,14 @@ export async function renderEditOrganizationForm(req, res, next) {
 export async function handleUpdateOrganization(req, res, next) {
   try {
     const orgId = req.params.id;
-    const { name, description, location } = req.body;
-    await updateOrganization(orgId, { name, description, location });
+    const { name, email, image_url } = req.body;
+    
+    if (!name || name.trim() === "" || !email || email.trim() === "") {
+      req.flash("error", "Name and email are required fields.");
+      return res.redirect("back");
+    }
+
+    await updateOrganization(orgId, { name, email, image_url });
     req.flash("success", "Organization updated successfully!");
     res.redirect(`/organization/${orgId}`);
   } catch (error) {

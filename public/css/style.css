@@ -11,7 +11,7 @@
   
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
-  --border-color: #e2e8f0;
+  --border-color: #cbd5e1; /* Slightly more defined for buttons/cards */
   
   --text-main: #0f172a;
   --text-muted: #64748b;
@@ -257,6 +257,29 @@ main a:hover {
   box-shadow: var(--shadow-md);
 }
 
+/* Clickable Button-Like Title Style for Projects */
+.project-title-btn {
+  background-color: var(--bg-main);
+  color: var(--accent) !important;
+  border: 1px solid var(--border-color);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.project-title-btn:hover {
+  background-color: #f1f5f9;
+  border-color: var(--accent);
+  color: var(--accent-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
 /* Category List Items */
 main ul {
   list-style-type: none;
@@ -437,7 +460,7 @@ button[type="submit"]:hover {
 
 /* Flash Messaging Alerts */
 .alert {
-  padding: 1rem 1.25rem;
+  padding: 1.025rem 1.25rem;
   border-radius: var(--radius-sm);
   margin-bottom: 1.5rem;
   font-weight: 500;

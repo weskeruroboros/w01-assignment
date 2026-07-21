@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-// Specific routes must come BEFORE dynamic routes (like /categories/:id)
+// Specific routes must come BEFORE dynamic routes (like /:id)
 router.get("/new-category", getNewCategoryForm);
 router.get("/categories/new", getNewCategoryForm);
 
@@ -18,7 +18,7 @@ router.get("/categories", getCategories);
 router.post("/categories", createCategory);
 
 router.get("/categories/:id/edit", getEditCategoryForm);
-router.post("/categories/:id", updateCategory);
+router.post("/categories/:id/edit", updateCategory);
 router.post("/categories/:id/delete", deleteCategory);
 
 export default router;

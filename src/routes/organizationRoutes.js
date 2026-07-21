@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/organizations", getOrganizations);
 router.get("/organization/new", renderNewOrganizationForm);
-router.post("/organizations", handleCreateOrganization);
+router.post("/organization", handleCreateOrganization);
 router.get("/organization/:id", getOrganizationDetails);
 router.get("/organization/:id/edit", renderEditOrganizationForm);
 router.post("/organization/:id/edit", handleUpdateOrganization);

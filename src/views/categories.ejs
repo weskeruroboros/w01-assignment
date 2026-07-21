@@ -1,36 +1,52 @@
 <%- include("partials/header") %>
 
-<h2>Cause Categories</h2>
+<main class="container" style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+    <h2 style="margin: 0; color: #1e293b; font-size: 1.8rem;">Cause Categories</h2>
+    <a href="/categories/new" class="btn btn-primary" style="text-decoration: none; padding: 10px 18px; background: #2563eb; color: white; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);">+ Add New Category</a>
+  </div>
 
-<a href="/categories/new" class="btn">+ Add New Category</a>
-
-<ul>
-  <% if (typeof categories !== "undefined" && categories.length > 0) { %>
-    <% categories.forEach(category => { %>
-      <% const catId = category.id || category._id || category.category_id; %>
-      <li>
-        <a href="/categories/<%= catId %>"><%= category.name %></a>
-        <p><%= category.description %></p>
-        
-        <div class="card-actions">
-          <!-- Edit Action -->
-          <a href="/categories/<%= catId %>/edit" class="btn-sm">Edit</a>
+  <% if (categories && categories.length > 0) { %>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      <% categories.forEach(category => { %>
+        <div class="card" style="border: 1px solid #e2e8f0; padding: 24px; border-radius: 12px; background: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);">
           
-          <!-- Delete Action Form -->
-          <form 
-            action="/categories/<%= catId %>/delete" 
-            method="POST" 
-            class="inline-form" 
-            onsubmit="return confirm('Are you sure you want to remove this category?');"
-          >
-            <button type="submit" class="btn-danger">Remove</button>
-          </form>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+            <h3 style="margin: 0; font-size: 1.4rem; color: #0f172a;"><%= category.name %></h3>
+            
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <a href="/categories/<%= category.category_id %>/edit" class="btn btn-secondary" style="text-decoration: none; padding: 6px 14px; background: #f1f5f9; color: #334155; border-radius: 6px; font-weight: 600; font-size: 0.9rem; border: 1px solid #cbd5e1;">Edit</a>
+              <form action="/categories/<%= category.category_id %>/delete" method="POST" style="margin: 0; display: inline;">
+                <button type="submit" class="btn btn-danger" style="background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Remove</button>
+              </form>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid #f1f5f9; padding-top: 15px;">
+            <strong style="display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 10px;">Associated Projects</strong>
+            
+            <% if (category.projects && category.projects.length > 0) { %>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <% category.projects.forEach(project => { %>
+                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 6px; color: #334155; font-weight: 500;">
+                    <%= project.title %>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p style="margin: 0; color: #94a3b8; font-style: italic; font-size: 0.95rem;">No projects linked to this category.</p>
+            <% } %>
+          </div>
+
         </div>
-      </li>
-    <% }) %>
+      <% }) %>
+    </div>
   <% } else { %>
-    <p>No categories found.</p>
+    <div style="text-align: center; padding: 40px; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+      <p style="color: #64748b; margin: 0 0 15px 0;">No categories found.</p>
+      <a href="/categories/new" class="btn btn-primary" style="text-decoration: none; padding: 8px 16px; background: #2563eb; color: white; border-radius: 6px; font-weight: 600;">Create your first category</a>
+    </div>
   <% } %>
-</ul>
+</main>
 
 <%- include("partials/footer") %>

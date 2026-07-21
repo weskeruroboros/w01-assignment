@@ -9,13 +9,13 @@
   </div>
 
   <div class="form-group" style="margin-bottom: 12px;">
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" rows="4" required style="width: 100%; padding: 8px;"><%= organization.description %></textarea>
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" name="email" value="<%= organization.email %>" required style="width: 100%; padding: 8px;">
   </div>
 
   <div class="form-group" style="margin-bottom: 12px;">
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="location" value="<%= organization.location %>" style="width: 100%; padding: 8px;">
+    <label for="image_url">Image URL:</label>
+    <input type="text" id="image_url" name="image_url" value="<%= organization.image_url %>" style="width: 100%; padding: 8px;">
   </div>
 
   <button type="submit" class="btn btn-primary">Update Organization</button>

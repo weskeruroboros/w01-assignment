@@ -1,5 +1,6 @@
 import pool from "../config/pool.js";
 
+// Fetch all projects with organization details and aggregated categories (formatted for pill tags)
 export async function getAllProjects() {
   const result = await pool.query(`
     SELECT
@@ -8,7 +9,7 @@ export async function getAllProjects() {
       p.description,
       p.location,
       TO_CHAR(p.project_date, 'YYYY-MM-DD') AS project_date,
-      p.organization_id,            
+      p.organization_id,          
       o.name AS organization_name,
       STRING_AGG(DISTINCT c.name, ',') AS categories,      
       STRING_AGG(DISTINCT c.category_id::TEXT, ',') AS category_ids 
@@ -22,6 +23,7 @@ export async function getAllProjects() {
   return result.rows;
 }
 
+// Fetch a single project by its ID
 export async function getProjectById(projectId) {
   const result = await pool.query(`
     SELECT 
@@ -40,6 +42,7 @@ export async function getProjectById(projectId) {
   return result.rows[0] || null;
 }
 
+// Fetch categories linked to a specific project
 export async function getCategoriesByProject(projectId) {
   const result = await pool.query(`
     SELECT c.category_id, c.name
@@ -51,15 +54,16 @@ export async function getCategoriesByProject(projectId) {
   return result.rows;
 }
 
+// Transaction-safe update for assigning/unassigning categories
 export async function updateProjectCategories(projectId, categoryIds = []) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
     
-    // Clear existing assignments
+    // Clear existing category assignments
     await client.query("DELETE FROM project_categories WHERE project_id = $1;", [projectId]);
 
-    // Insert new selected assignments
+    // Insert new selected category assignments
     const ids = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
     for (const catId of ids) {
       if (catId) {
@@ -79,6 +83,7 @@ export async function updateProjectCategories(projectId, categoryIds = []) {
   }
 }
 
+// Create a new project record
 export async function createProject(projectData) {
   const result = await pool.query(
     `INSERT INTO projects (title, organization_id, location, project_date, description) 
@@ -89,6 +94,7 @@ export async function createProject(projectData) {
   return result.rows[0];
 }
 
+// Update an existing project record
 export async function updateProject(projectId, projectData) {
   const result = await pool.query(
     `UPDATE projects 
