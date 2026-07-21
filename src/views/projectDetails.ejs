@@ -18,11 +18,16 @@
     <p>No categories assigned yet.</p>
   <% } %>
 
-  <div style="margin-top: 20px;">
+  <div style="margin-top: 20px; display: flex; gap: 10px;">
+    <a href="/project/<%= project.project_id %>/edit" class="btn btn-secondary">
+      Edit Project
+    </a>
     <a href="/project/<%= project.project_id %>/assign-categories" class="btn btn-primary">
       Assign / Update Categories
     </a>
   </div>
+  
+  <p style="margin-top: 20px;"><a href="/projects">← Back to All Projects</a></p>
 </article>
 
 <%- include("partials/footer") %>

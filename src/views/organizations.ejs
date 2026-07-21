@@ -1,11 +1,14 @@
 <%- include("partials/header") %>
 
-<h2>Organizations</h2>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+  <h2>Organizations</h2>
+  <a href="/organization/new" class="btn btn-primary">+ Add New Organization</a>
+</div>
 
 <div class="org-list">
   <% if (typeof organizations !== "undefined" && organizations.length > 0) { %>
     <% organizations.forEach(org => { %>
-      <% const orgId = org.id || org._id || org.org_id; %>
+      <% const orgId = org.id || org._id || org.org_id || org.organization_id; %>
       <div class="org-card">
         <% 
           let rawImg = org.image_url || org.imageUrl || org.image || org.logo || org.filename || org.photo;
@@ -19,7 +22,7 @@
         <img src="<%= imgPath %>" alt="<%= org.name %> Logo">
         
         <div style="flex: 1;">
-          <h3><a href="/organizations/<%= orgId %>" style="color: var(--primary); text-decoration: none;"><%= org.name %></a></h3>
+          <h3><a href="/organization/<%= orgId %>" style="color: var(--primary); text-decoration: none;"><%= org.name %></a></h3>
           <p><%= org.description %></p>
         </div>
       </div>

@@ -78,3 +78,24 @@ export async function updateProjectCategories(projectId, categoryIds = []) {
     client.release();
   }
 }
+
+export async function createProject(projectData) {
+  const result = await pool.query(
+    `INSERT INTO projects (title, organization_id, location, project_date, description) 
+     VALUES ($1, $2, $3, $4, $5) 
+     RETURNING *;`,
+    [projectData.title, projectData.organization_id, projectData.location, projectData.project_date, projectData.description]
+  );
+  return result.rows[0];
+}
+
+export async function updateProject(projectId, projectData) {
+  const result = await pool.query(
+    `UPDATE projects 
+     SET title = $1, organization_id = $2, location = $3, project_date = $4, description = $5 
+     WHERE project_id = $6 
+     RETURNING *;`,
+    [projectData.title, projectData.organization_id, projectData.location, projectData.project_date, projectData.description, projectId]
+  );
+  return result.rows[0];
+}

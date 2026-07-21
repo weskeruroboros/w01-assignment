@@ -1,36 +1,40 @@
 import pool from "../config/pool.js";
 
 export async function getAllOrganizations() {
+  const result = await pool.query("SELECT * FROM organizations ORDER BY name ASC;");
+  return result.rows;
+}
+
+export async function getOrganizationById(id) {
+  const result = await pool.query("SELECT * FROM organizations WHERE organization_id = $1;", [id]);
+  return result.rows[0];
+}
+
+export async function getProjectsByOrganization(organizationId) {
   const result = await pool.query(
-    `SELECT organization_id, name, email, image_url 
-     FROM organizations 
-     ORDER BY name ASC;`
+    "SELECT * FROM projects WHERE organization_id = $1 ORDER BY project_date DESC;",
+    [organizationId]
   );
   return result.rows;
 }
 
-export async function getOrganizationById(orgId) {
+export async function createOrganization(orgData) {
   const result = await pool.query(
-    `SELECT organization_id, name, email, image_url 
-     FROM organizations 
-     WHERE organization_id = $1;`,
-    [orgId]
+    `INSERT INTO organizations (name, email, image_url) 
+     VALUES ($1, $2, $3) 
+     RETURNING *;`,
+    [orgData.name, orgData.email, orgData.image_url]
   );
-  return result.rows[0] || null;
+  return result.rows[0];
 }
 
-export async function getProjectsByOrganization(orgId) {
+export async function updateOrganization(id, orgData) {
   const result = await pool.query(
-    `SELECT 
-       project_id, 
-       title, 
-       description, 
-       location, 
-       TO_CHAR(project_date, 'YYYY-MM-DD') AS project_date 
-     FROM projects 
-     WHERE organization_id = $1 
-     ORDER BY project_date ASC;`,
-    [orgId]
+    `UPDATE organizations 
+     SET name = $1, email = $2, image_url = $3 
+     WHERE organization_id = $4 
+     RETURNING *;`,
+    [orgData.name, orgData.email, orgData.image_url, id]
   );
-  return result.rows;
+  return result.rows[0];
 }

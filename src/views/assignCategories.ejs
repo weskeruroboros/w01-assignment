@@ -3,8 +3,8 @@
 <h2>Assign Categories to: <%= project.title %></h2>
 
 <form action="/project/<%= project.project_id %>/assign-categories" method="POST" class="form-container">
-  <div class="form-group">
-    <label>Select Categories:</label>
+  <div class="form-group" style="margin-bottom: 20px;">
+    <label style="display: block; font-weight: bold; margin-bottom: 10px;">Select Categories:</label>
     <% allCategories.forEach(cat => { %>
       <div class="checkbox-group" style="margin-bottom: 8px;">
         <input 
@@ -14,7 +14,7 @@
           value="<%= cat.category_id %>"
           <%= assignedCategoryIds.includes(Number(cat.category_id)) ? 'checked' : '' %>
         >
-        <label for="cat_<%= cat.category_id %>"><%= cat.name %></label>
+        <label for="cat_<%= cat.category_id %>" style="margin-left: 6px; font-weight: normal;"><%= cat.name %></label>
       </div>
     <% }) %>
   </div>

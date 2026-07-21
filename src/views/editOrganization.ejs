@@ -1,0 +1,25 @@
+<%- include("partials/header") %>
+
+<h2>Edit Organization: <%= organization.name %></h2>
+
+<form action="/organization/<%= organization.organization_id %>/edit" method="POST" class="form-container">
+  <div class="form-group" style="margin-bottom: 12px;">
+    <label for="name">Organization Name:</label>
+    <input type="text" id="name" name="name" value="<%= organization.name %>" required style="width: 100%; padding: 8px;">
+  </div>
+
+  <div class="form-group" style="margin-bottom: 12px;">
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="4" required style="width: 100%; padding: 8px;"><%= organization.description %></textarea>
+  </div>
+
+  <div class="form-group" style="margin-bottom: 12px;">
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" value="<%= organization.location %>" style="width: 100%; padding: 8px;">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Update Organization</button>
+  <a href="/organization/<%= organization.organization_id %>" class="btn btn-secondary">Cancel</a>
+</form>
+
+<%- include("partials/footer") %>

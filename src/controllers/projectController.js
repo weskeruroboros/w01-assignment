@@ -2,9 +2,12 @@ import {
   getAllProjects, 
   getProjectById, 
   getCategoriesByProject,
-  updateProjectCategories 
+  updateProjectCategories,
+  createProject,
+  updateProject
 } from "../models/projects.js";
 import { getAllCategories } from "../models/categories.js";
+import { getAllOrganizations } from "../models/organizations.js";
 
 export async function getProjects(req, res, next) {
   try {
@@ -42,6 +45,53 @@ export async function getProjectDetails(req, res, next) {
     });
   } catch (error) { 
     next(error); 
+  }
+}
+
+export async function renderNewProjectForm(req, res, next) {
+  try {
+    const organizations = await getAllOrganizations();
+    res.render("newProject", { title: "Add Project", organizations });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function handleCreateProject(req, res, next) {
+  try {
+    const { title, organization_id, location, project_date, description } = req.body;
+    await createProject({ title, organization_id, location, project_date, description });
+    req.flash("success", "Project created successfully!");
+    res.redirect("/projects");
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function renderEditProjectForm(req, res, next) {
+  try {
+    const projectId = req.params.id;
+    const project = await getProjectById(projectId);
+    if (!project) {
+      req.flash("error", "Project not found.");
+      return res.redirect("/projects");
+    }
+    const organizations = await getAllOrganizations();
+    res.render("editProject", { title: `Edit ${project.title}`, project, organizations });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function handleUpdateProject(req, res, next) {
+  try {
+    const projectId = req.params.id;
+    const { title, organization_id, location, project_date, description } = req.body;
+    await updateProject(projectId, { title, organization_id, location, project_date, description });
+    req.flash("success", "Project updated successfully!");
+    res.redirect(`/project/${projectId}`);
+  } catch (error) {
+    next(error);
   }
 }
 

@@ -3,6 +3,12 @@
 <h2><%= organization.name %></h2>
 <p><strong>Email:</strong> <%= organization.email %></p>
 
+<div style="margin-top: 15px; margin-bottom: 25px;">
+  <a href="/organization/<%= organization.organization_id %>/edit" class="btn btn-secondary">
+    Edit Organization
+  </a>
+</div>
+
 <h3>Projects by this Organization</h3>
 <% if (projects && projects.length > 0) { %>
   <ul>
@@ -15,5 +21,7 @@
 <% } else { %>
   <p>No projects associated with this organization.</p>
 <% } %>
+
+<p style="margin-top: 20px;"><a href="/organizations">← Back to All Organizations</a></p>
 
 <%- include("partials/footer") %>
