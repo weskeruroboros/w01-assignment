@@ -1,25 +1,31 @@
 <%- include("partials/header") %>
 
-<h2>Edit Organization: <%= organization.name %></h2>
+<main class="container" style="max-width: 600px; margin: 40px auto;">
+  <h2>Edit Organization</h2>
+  
+  <form action="/organizations/<%= organization.organization_id %>/edit" method="POST">
+    <div style="margin-bottom: 15px;">
+      <label for="name" style="display: block; margin-bottom: 5px;">Organization Name *</label>
+      <input type="text" id="name" name="name" value="<%= organization.name %>" required style="width: 100%; padding: 8px; box-sizing: border-box;">
+    </div>
 
-<form action="/organization/<%= organization.organization_id %>/edit" method="POST" class="form-container">
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="name">Organization Name:</label>
-    <input type="text" id="name" name="name" value="<%= organization.name %>" required style="width: 100%; padding: 8px;">
-  </div>
+    <div style="margin-bottom: 15px;">
+      <label for="description" style="display: block; margin-bottom: 5px;">Description</label>
+      <textarea id="description" name="description" rows="4" style="width: 100%; padding: 8px; box-sizing: border-box;"><%= organization.description %></textarea>
+    </div>
 
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="email">Email Address:</label>
-    <input type="email" id="email" name="email" value="<%= organization.email %>" required style="width: 100%; padding: 8px;">
-  </div>
+    <div style="margin-bottom: 15px;">
+      <label for="email" style="display: block; margin-bottom: 5px;">Email</label>
+      <input type="email" id="email" name="email" value="<%= organization.email %>" style="width: 100%; padding: 8px; box-sizing: border-box;">
+    </div>
 
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="image_url">Image URL:</label>
-    <input type="text" id="image_url" name="image_url" value="<%= organization.image_url %>" style="width: 100%; padding: 8px;">
-  </div>
+    <div style="margin-bottom: 15px;">
+      <label for="image_url" style="display: block; margin-bottom: 5px;">Image URL</label>
+      <input type="text" id="image_url" name="image_url" value="<%= organization.image_url %>" style="width: 100%; padding: 8px; box-sizing: border-box;">
+    </div>
 
-  <button type="submit" class="btn btn-primary">Update Organization</button>
-  <a href="/organization/<%= organization.organization_id %>" class="btn btn-secondary">Cancel</a>
-</form>
+    <button type="submit" class="btn btn-primary" style="padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">Update Organization</button>
+  </form>
+</main>
 
 <%- include("partials/footer") %>

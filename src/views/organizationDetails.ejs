@@ -1,27 +1,35 @@
 <%- include("partials/header") %>
 
-<h2><%= organization.name %></h2>
-<p><strong>Email:</strong> <%= organization.email %></p>
+<main class="container" style="max-width: 800px; margin: 40px auto;">
+  <h2><%= organization.name %></h2>
 
-<div style="margin-top: 15px; margin-bottom: 25px;">
-  <a href="/organization/<%= organization.organization_id %>/edit" class="btn btn-secondary">
-    Edit Organization
-  </a>
-</div>
+  <% if (organization.image_url) { %>
+    <img src="<%= organization.image_url %>" alt="<%= organization.name %>" style="max-width: 300px; border-radius: 8px; margin-bottom: 15px;">
+  <% } %>
 
-<h3>Projects by this Organization</h3>
-<% if (projects && projects.length > 0) { %>
-  <ul>
-    <% projects.forEach(p => { %>
-      <li>
-        <a href="/project/<%= p.project_id %>"><strong><%= p.title %></strong></a> - <%= p.project_date %>
-      </li>
-    <% }) %>
-  </ul>
-<% } else { %>
-  <p>No projects associated with this organization.</p>
-<% } %>
+  <p><strong>Email:</strong> <%= organization.email || 'N/A' %></p>
+  <p><strong>Description:</strong> <%= organization.description || 'No description provided.' %></p>
 
-<p style="margin-top: 20px;"><a href="/organizations">← Back to All Organizations</a></p>
+  <hr style="margin: 30px 0;">
+
+  <h3>Projects by this Organization</h3>
+  <% if (projects && projects.length > 0) { %>
+    <ul>
+      <% projects.forEach(p => { %>
+        <li>
+          <strong><%= p.title %></strong> - <%= p.location %> (<%= p.project_date %>)
+          <p><%= p.description %></p>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No projects found for this organization.</p>
+  <% } %>
+
+  <div style="margin-top: 20px;">
+    <a href="/organizations/<%= organization.organization_id %>/edit" class="btn" style="margin-right: 10px;">Edit</a>
+    <a href="/organizations">Back to Organizations</a>
+  </div>
+</main>
 
 <%- include("partials/footer") %>

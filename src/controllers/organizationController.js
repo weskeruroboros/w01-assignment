@@ -1,99 +1,109 @@
 import { 
-  getAllOrganizations, 
-  getOrganizationById, 
-  getProjectsByOrganization,
-  createOrganization,
-  updateOrganization
-} from "../models/organizations.js";
+  getOrganizationsFromDB, 
+  getOrganizationByIdFromDB, 
+  getProjectsByOrganizationFromDB,
+  createOrganizationInDB, 
+  updateOrganizationInDB, 
+  deleteOrganizationFromDB 
+} from "../models/organizationModel.js";
 
-export async function getOrganizations(req, res, next) {
+export const getOrganizations = async (req, res) => {
   try {
-    const organizations = await getAllOrganizations();
+    const organizations = await getOrganizationsFromDB();
     res.render("organizations", { title: "Organizations", organizations });
-  } catch (error) { 
-    next(error); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
-}
+};
 
-export async function getOrganizationDetails(req, res, next) {
+export const getOrganizationDetails = async (req, res) => {
   try {
-    const orgId = req.params.id;
-
-    if (isNaN(orgId)) {
-      const err = new Error("Invalid Organization ID");
-      err.status = 400;
-      return next(err);
-    }
-
-    const organization = await getOrganizationById(orgId);
-    
+    const organization = await getOrganizationByIdFromDB(req.params.id);
     if (!organization) {
-      const err = new Error("Organization Not Found");
-      err.status = 404;
-      return next(err);
+      req.flash("error", "Organization not found.");
+      return res.redirect("/organizations");
     }
 
-    const projects = await getProjectsByOrganization(orgId);
-    
+    const projects = await getProjectsByOrganizationFromDB(req.params.id);
+
     res.render("organizationDetails", { 
       title: organization.name, 
       organization, 
       projects 
     });
-  } catch (error) { 
-    next(error); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
-}
+};
 
-export function renderNewOrganizationForm(req, res) {
-  res.render("newOrganization", { title: "Add Organization" });
-}
+export const getNewOrganizationForm = (req, res) => {
+  res.render("newOrganization", { title: "Add New Organization" });
+};
 
-export async function handleCreateOrganization(req, res, next) {
+export const handleCreateOrganization = async (req, res) => {
   try {
-    const { name, email, image_url } = req.body;
-    
-    if (!name || name.trim() === "" || !email || email.trim() === "") {
-      req.flash("error", "Name and email are required fields.");
+    const { name, description, email } = req.body;
+    const trimmedName = name ? name.trim() : "";
+
+    if (!trimmedName) {
+      req.flash("error", "Organization name is required.");
       return res.redirect("back");
     }
 
-    await createOrganization({ name, email, image_url });
+    await createOrganizationInDB(trimmedName, description, email);
     req.flash("success", "Organization created successfully!");
     res.redirect("/organizations");
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Failed to create organization.");
+    res.redirect("/organizations/new");
   }
-}
+};
 
-export async function renderEditOrganizationForm(req, res, next) {
+export const renderEditOrganizationForm = async (req, res) => {
   try {
-    const orgId = req.params.id;
-    const organization = await getOrganizationById(orgId);
+    const organization = await getOrganizationByIdFromDB(req.params.id);
     if (!organization) {
       req.flash("error", "Organization not found.");
       return res.redirect("/organizations");
     }
-    res.render("editOrganization", { title: `Edit ${organization.name}`, organization });
-  } catch (error) {
-    next(error);
+    res.render("editOrganization", { title: "Edit Organization", organization });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
-}
+};
 
-export async function handleUpdateOrganization(req, res, next) {
+export const handleUpdateOrganization = async (req, res) => {
   try {
-    const orgId = req.params.id;
-    const { name, email, image_url } = req.body;
-    
-    if (!name || name.trim() === "" || !email || email.trim() === "") {
-      req.flash("error", "Name and email are required fields.");
+    const { name, description, email, image_url } = req.body;
+    const trimmedName = name ? name.trim() : "";
+
+    if (!trimmedName) {
+      req.flash("error", "Organization name is required.");
       return res.redirect("back");
     }
 
-    await updateOrganization(orgId, { name, email, image_url });
+    await updateOrganizationInDB(req.params.id, trimmedName, description, email, image_url);
     req.flash("success", "Organization updated successfully!");
-    res.redirect(`/organization/${orgId}`);
-  } catch (error) {
-    next(error);
+    res.redirect("/organizations");
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Failed to update organization.");
+    res.redirect(`/organizations/${req.params.id}/edit`);
   }
-}
+};
+
+export const deleteOrganization = async (req, res) => {
+  try {
+    await deleteOrganizationFromDB(req.params.id);
+    req.flash("success", "Organization removed successfully!");
+    res.redirect("/organizations");
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Failed to remove organization.");
+    res.redirect("/organizations");
+  }
+};
