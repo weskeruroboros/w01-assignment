@@ -1,34 +1,40 @@
 <%- include("partials/header") %>
 
-<main class="container" style="max-width: 800px; margin: 40px auto;">
-  <h2><%= organization.name %></h2>
+<main class="container" style="max-width: 800px; margin: 40px auto; padding: 0 15px;">
+  <div style="background: #ffffff; border: 1px solid #e5e7eb; padding: 24px; border-radius: 8px;">
+    <h2 style="margin-top: 0; color: #111827; font-size: 1.75rem;"><%= organization.name %></h2>
 
-  <% if (organization.image_url) { %>
-    <img src="<%= organization.image_url %>" alt="<%= organization.name %>" style="max-width: 300px; border-radius: 8px; margin-bottom: 15px;">
-  <% } %>
+    <img src="<%= organization.image_url || '/images/home.jpg' %>" 
+         alt="<%= organization.name %>" 
+         onerror="this.src='/images/home.jpg';"
+         style="max-width: 100%; max-height: 250px; border-radius: 6px; margin-bottom: 20px; object-fit: cover;">
 
-  <p><strong>Email:</strong> <%= organization.email || 'N/A' %></p>
-  <p><strong>Description:</strong> <%= organization.description || 'No description provided.' %></p>
+    <div style="margin-bottom: 20px; color: #374151;">
+      <p style="margin: 4px 0;"><strong>Email:</strong> <%= organization.email || 'N/A' %></p>
+      <p style="margin: 4px 0;"><strong>Description:</strong> <%= organization.description || 'No description provided.' %></p>
+    </div>
 
-  <hr style="margin: 30px 0;">
+    <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
 
-  <h3>Projects by this Organization</h3>
-  <% if (projects && projects.length > 0) { %>
-    <ul>
-      <% projects.forEach(p => { %>
-        <li>
-          <strong><%= p.title %></strong> - <%= p.location %> (<%= p.project_date %>)
-          <p><%= p.description %></p>
-        </li>
-      <% }) %>
-    </ul>
-  <% } else { %>
-    <p>No projects found for this organization.</p>
-  <% } %>
+    <h3 style="color: #111827; font-size: 1.25rem; margin-bottom: 12px;">Projects by this Organization</h3>
+    <% if (projects && projects.length > 0) { %>
+      <div style="display: grid; gap: 12px;">
+        <% projects.forEach(p => { %>
+          <div style="background: #f9fafb; padding: 12px 16px; border-radius: 6px; border: 1px solid #f3f4f6;">
+            <strong style="color: #111827;"><%= p.title %></strong> 
+            <% if (p.location) { %><span style="color: #6b7280; font-size: 0.85rem;"> — <%= p.location %></span><% } %>
+            <% if (p.description) { %><p style="margin: 4px 0 0 0; color: #4b5563; font-size: 0.9rem;"><%= p.description %></p><% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p style="color: #6b7280; font-size: 0.9rem;">No projects found for this organization.</p>
+    <% } %>
 
-  <div style="margin-top: 20px;">
-    <a href="/organizations/<%= organization.organization_id %>/edit" class="btn" style="margin-right: 10px;">Edit</a>
-    <a href="/organizations">Back to Organizations</a>
+    <div style="margin-top: 24px; display: flex; gap: 12px; align-items: center;">
+      <a href="/organizations/<%= organization.organization_id %>/edit" style="padding: 8px 16px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem;">Edit</a>
+      <a href="/organizations" style="color: #4b5563; text-decoration: none; font-size: 0.9rem;">Back to Organizations</a>
+    </div>
   </div>
 </main>
 

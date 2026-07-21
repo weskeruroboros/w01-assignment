@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import session from "express-session";
 import flash from "connect-flash";
 
-// Import your routes
+// Import Routes
 import categoryRoutes from "./src/routes/categoryRoutes.js";
 import organizationRoutes from "./src/routes/organizationRoutes.js";
 import projectRoutes from "./src/routes/projectRoutes.js";
@@ -14,18 +14,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// View engine setup
+// View Engine Setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src", "views"));
 
-// Middleware
+// Request Body Parsers
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// CRITICAL: Serves static files (images, css, js) from the "public" folder
+// Serves static files (CSS, Images, Client JS) from the public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// Session & Flash messaging setup
+// Session & Flash Setup
 app.use(
   session({
     secret: "your_secret_key_here",
@@ -35,7 +35,7 @@ app.use(
 );
 app.use(flash());
 
-// Global variables for flash messages and views
+// Pass Flash Messages to All EJS Templates Automatically
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
@@ -47,12 +47,12 @@ app.use(categoryRoutes);
 app.use(organizationRoutes);
 app.use(projectRoutes);
 
-// Home route
+// Home Route
 app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });
 
-// Server Listen
+// Server Listener
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

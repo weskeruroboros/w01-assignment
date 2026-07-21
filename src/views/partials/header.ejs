@@ -20,3 +20,24 @@
     </nav>
   </header>
   <main>
+
+    <!-- FLASH MESSAGES (Matches server.js res.locals) -->
+    <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+      <div style="max-width: 900px; margin: 0 auto 20px; padding: 0 15px;">
+        <% success.forEach(msg => { %>
+          <div style="padding: 12px 16px; background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; border-radius: 6px; font-weight: 500;">
+            <%= msg %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+      <div style="max-width: 900px; margin: 0 auto 20px; padding: 0 15px;">
+        <% error.forEach(msg => { %>
+          <div style="padding: 12px 16px; background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; border-radius: 6px; font-weight: 500;">
+            <%= msg %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>

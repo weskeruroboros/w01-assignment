@@ -11,7 +11,7 @@ import {
 
 const router = express.Router();
 
-// Plural Routes
+// Primary Plural Routes
 router.get("/organizations", getOrganizations);
 router.get("/organizations/new", getNewOrganizationForm);
 router.post("/organizations", handleCreateOrganization);
@@ -20,7 +20,7 @@ router.get("/organizations/:id/edit", renderEditOrganizationForm);
 router.post("/organizations/:id/edit", handleUpdateOrganization);
 router.post("/organizations/:id/delete", deleteOrganization);
 
-// Singular Route Aliases (Fixes 'Cannot GET /organization/...')
+// Singular Route Aliases
 router.get("/organization/new", getNewOrganizationForm);
 router.post("/organization", handleCreateOrganization);
 router.get("/organization/:id", getOrganizationDetails);

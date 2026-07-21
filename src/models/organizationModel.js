@@ -1,9 +1,16 @@
 import pool from "../config/pool.js";
 
-// Auto-fix database schema on server boot
 async function ensureSchema() {
   try {
     await pool.query("ALTER TABLE organizations ADD COLUMN IF NOT EXISTS description TEXT;");
+    await pool.query("ALTER TABLE organizations ADD COLUMN IF NOT EXISTS image_url TEXT;");
+    
+    // Automatically populate missing image URLs for existing database records
+    await pool.query(
+      `UPDATE organizations 
+       SET image_url = '/images/home.jpg' 
+       WHERE image_url IS NULL OR image_url = '';`
+    );
   } catch (err) {
     console.error("Schema sync warning:", err.message);
   }
@@ -37,12 +44,13 @@ export async function getProjectsByOrganizationFromDB(organizationId) {
   return result.rows;
 }
 
-export async function createOrganizationInDB(name, description, email) {
+// Automatically assigns local default image /images/home.jpg if none provided
+export async function createOrganizationInDB(name, description, email, imageUrl = "/images/home.jpg") {
   const result = await pool.query(
-    `INSERT INTO organizations (name, description, email)
-     VALUES ($1, $2, $3)
-     RETURNING organization_id, name, description, email;`,
-    [name, description, email]
+    `INSERT INTO organizations (name, description, email, image_url)
+     VALUES ($1, $2, $3, $4)
+     RETURNING *;`,
+    [name, description, email, imageUrl]
   );
   return result.rows[0];
 }
@@ -52,7 +60,7 @@ export async function updateOrganizationInDB(organizationId, name, description, 
     `UPDATE organizations
      SET name = $1, description = $2, email = $3, image_url = $4
      WHERE organization_id = $5
-     RETURNING organization_id, name, description, email, image_url;`,
+     RETURNING *;`,
     [name, description, email, imageUrl, organizationId]
   );
   return result.rows[0] || null;
