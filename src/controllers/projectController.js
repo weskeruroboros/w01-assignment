@@ -5,9 +5,9 @@ import {
   updateProjectCategories,
   createProject,
   updateProject
-} from "../models/projects.js";
-import { getAllCategories } from "../models/categories.js";
-import { getAllOrganizations } from "../models/organizations.js";
+} from "../models/projectModel.js";
+import { getAllCategories } from "../models/categoryModel.js";
+import { getAllOrganizations } from "../models/organizationModel.js";
 
 export async function getProjects(req, res, next) {
   try {

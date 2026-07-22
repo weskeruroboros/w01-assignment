@@ -25,6 +25,8 @@ export async function getOrganizationsFromDB() {
   return result.rows;
 }
 
+export const getAllOrganizations = getOrganizationsFromDB;
+
 export async function getOrganizationByIdFromDB(organizationId) {
   const result = await pool.query(
     `SELECT organization_id, name, description, email, image_url 

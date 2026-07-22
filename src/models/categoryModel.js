@@ -18,6 +18,9 @@ export async function getCategoriesFromDB() {
   return result.rows;
 }
 
+// Export alias to satisfy projectController import
+export const getAllCategories = getCategoriesFromDB;
+
 export async function getCategoryByIdFromDB(categoryId) {
   const result = await pool.query(
     `SELECT category_id, name 
