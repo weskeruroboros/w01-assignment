@@ -5,7 +5,6 @@ async function ensureSchema() {
     await pool.query("ALTER TABLE organizations ADD COLUMN IF NOT EXISTS description TEXT;");
     await pool.query("ALTER TABLE organizations ADD COLUMN IF NOT EXISTS image_url TEXT;");
     
-    // Automatically populate missing image URLs for existing database records
     await pool.query(
       `UPDATE organizations 
        SET image_url = '/images/home.jpg' 
@@ -44,7 +43,6 @@ export async function getProjectsByOrganizationFromDB(organizationId) {
   return result.rows;
 }
 
-// Automatically assigns local default image /images/home.jpg if none provided
 export async function createOrganizationInDB(name, description, email, imageUrl = "/images/home.jpg") {
   const result = await pool.query(
     `INSERT INTO organizations (name, description, email, image_url)

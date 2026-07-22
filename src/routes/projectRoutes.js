@@ -14,6 +14,7 @@ const router = express.Router();
 
 router.get("/projects", getProjects);
 router.get("/project/new", renderNewProjectForm);
+router.post("/projects", handleCreateProject);
 router.post("/project", handleCreateProject);
 router.get("/project/:id", getProjectDetails);
 router.get("/project/:id/edit", renderEditProjectForm);

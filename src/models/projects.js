@@ -83,25 +83,35 @@ export async function updateProjectCategories(projectId, categoryIds = []) {
   }
 }
 
-// Create a new project record
+// Create a new project record with safe sanitization for empty strings
 export async function createProject(projectData) {
+  const safeOrgId = projectData.organization_id && projectData.organization_id !== "" ? projectData.organization_id : null;
+  const safeLocation = projectData.location && projectData.location.trim() !== "" ? projectData.location.trim() : null;
+  const safeDate = projectData.project_date && projectData.project_date.trim() !== "" ? projectData.project_date : null;
+  const safeDescription = projectData.description ? projectData.description.trim() : "";
+
   const result = await pool.query(
     `INSERT INTO projects (title, organization_id, location, project_date, description) 
      VALUES ($1, $2, $3, $4, $5) 
      RETURNING *;`,
-    [projectData.title, projectData.organization_id, projectData.location, projectData.project_date, projectData.description]
+    [projectData.title.trim(), safeOrgId, safeLocation, safeDate, safeDescription]
   );
   return result.rows[0];
 }
 
-// Update an existing project record
+// Update an existing project record with safe sanitization for empty strings
 export async function updateProject(projectId, projectData) {
+  const safeOrgId = projectData.organization_id && projectData.organization_id !== "" ? projectData.organization_id : null;
+  const safeLocation = projectData.location && projectData.location.trim() !== "" ? projectData.location.trim() : null;
+  const safeDate = projectData.project_date && projectData.project_date.trim() !== "" ? projectData.project_date : null;
+  const safeDescription = projectData.description ? projectData.description.trim() : "";
+
   const result = await pool.query(
     `UPDATE projects 
      SET title = $1, organization_id = $2, location = $3, project_date = $4, description = $5 
      WHERE project_id = $6 
      RETURNING *;`,
-    [projectData.title, projectData.organization_id, projectData.location, projectData.project_date, projectData.description, projectId]
+    [projectData.title.trim(), safeOrgId, safeLocation, safeDate, safeDescription, projectId]
   );
   return result.rows[0];
 }

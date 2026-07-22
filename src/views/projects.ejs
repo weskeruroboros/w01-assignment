@@ -20,4 +20,30 @@
   <p>No projects found.</p>
 <% } %>
 
+<style>
+  .grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 800px;
+  }
+
+  .card {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 16px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .card p {
+    margin: 6px 0;
+  }
+</style>
+
 <%- include("partials/footer") %>

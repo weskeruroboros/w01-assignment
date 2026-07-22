@@ -44,7 +44,7 @@ export const getNewOrganizationForm = (req, res) => {
 
 export const handleCreateOrganization = async (req, res) => {
   try {
-    const { name, description, email, image_url } = req.body;
+    const { name, description, email } = req.body;
     const trimmedName = name ? name.trim() : "";
 
     if (!trimmedName) {
@@ -54,15 +54,8 @@ export const handleCreateOrganization = async (req, res) => {
 
     const safeDescription = description ? description.trim() : null;
     const safeEmail = email ? email.trim() : null;
-    const safeImageUrl = image_url && image_url.trim() !== "" ? image_url.trim() : "/images/home.jpg";
 
-    await createOrganizationInDB(
-      trimmedName, 
-      safeDescription, 
-      safeEmail, 
-      safeImageUrl
-    );
-
+    await createOrganizationInDB(trimmedName, safeDescription, safeEmail, "/images/home.jpg");
     req.flash("success", "Organization created successfully!");
     res.redirect("/organizations");
   } catch (err) {
