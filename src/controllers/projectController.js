@@ -4,7 +4,8 @@ import {
   getCategoriesByProject,
   updateProjectCategories,
   createProject,
-  updateProject
+  updateProject,
+  deleteProject
 } from "../models/projectModel.js";
 import { getAllCategories } from "../models/categoryModel.js";
 import { getAllOrganizations } from "../models/organizationModel.js";
@@ -90,6 +91,23 @@ export async function handleUpdateProject(req, res, next) {
     await updateProject(projectId, { title, organization_id, location, project_date, description });
     req.flash("success", "Project updated successfully!");
     res.redirect(`/project/${projectId}`);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function handleDeleteProject(req, res, next) {
+  try {
+    const projectId = req.params.id;
+    if (isNaN(projectId)) {
+      const err = new Error("Invalid Project ID");
+      err.status = 400;
+      return next(err);
+    }
+
+    await deleteProject(projectId);
+    req.flash("success", "Project deleted successfully!");
+    res.redirect("/projects");
   } catch (error) {
     next(error);
   }

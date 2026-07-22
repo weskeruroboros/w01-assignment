@@ -1,48 +1,97 @@
 <%- include("partials/header") %>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-  <h2>Service Projects</h2>
-  <a href="/project/new" class="btn btn-primary">+ Add New Project</a>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <h2 style="margin: 0; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; color: var(--primary);">Service Projects</h2>
+  <a href="/project/new" class="btn">+ Add New Project</a>
 </div>
 
+<% if (typeof message !== "undefined" && message) { %>
+  <div class="alert alert-success"><%= message %></div>
+<% } %>
+
 <% if (projects && projects.length > 0) { %>
-  <div class="grid-container">
+  <div style="display: flex; flex-direction: column; gap: 1.25rem;">
     <% projects.forEach(p => { %>
-      <div class="card">
-        <h3><a href="/project/<%= p.project_id %>"><%= p.title %></a></h3>
-        <p><strong>Organization:</strong> <%= p.organization_name %></p>
-        <p><strong>Date:</strong> <%= p.project_date %></p>
-        <p><strong>Categories:</strong> <%= p.categories || 'None' %></p>
+      <div class="project-card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+          <div>
+            <h3><a href="/project/<%= p.project_id %>" class="project-title-btn"><%= p.title %></a></h3>
+            <% if (p.organization_name) { %>
+              <p style="font-size: 0.95rem; font-weight: 500; margin: 0.5rem 0; color: var(--text-muted);">
+                Organization: <strong style="color: var(--text-main);"><%= p.organization_name %></strong>
+              </p>
+            <% } %>
+          </div>
+          <% if (p.project_date) { %>
+            <span style="font-size: 0.85rem; font-weight: 600; background: var(--bg-main); padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); color: var(--text-muted);">
+              📅 <%= p.project_date %>
+            </span>
+          <% } %>
+        </div>
+
+        <% if (p.categories) { %>
+          <div class="project-tags">
+            <% p.categories.split(',').forEach(cat => { %>
+              <span class="tag" style="font-size: 0.75rem; padding: 3px 10px; pointer-events: none; cursor: default;"><%= cat.trim() %></span>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem;">Categories: None</p>
+        <% } %>
+
+        <div class="card-actions" style="margin-top: 1.25rem; display: flex; gap: 0.75rem; align-items: center;">
+          <a href="/project/<%= p.project_id %>/edit" class="action-btn edit-btn">Edit</a>
+          <form action="/project/<%= p.project_id %>/delete" method="POST" class="inline-form" style="margin: 0; padding: 0;">
+            <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this project?');">Delete</button>
+          </form>
+        </div>
       </div>
     <% }) %>
   </div>
 <% } else { %>
-  <p>No projects found.</p>
+  <p style="color: var(--text-muted); text-align: center; padding: 3rem 0;">No projects found.</p>
 <% } %>
 
 <style>
-  .grid-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 800px;
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 34px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: normal;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
   }
-
-  .card {
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 16px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  .edit-btn {
+    background-color: #ffffff !important;
+    color: var(--accent) !important;
+    border: 1px solid var(--border-color) !important;
+    text-decoration: none !important;
   }
-
-  .card h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
+  .edit-btn:hover, .edit-btn:active {
+    background-color: #ffffff !important;
+    color: var(--accent) !important;
+    transform: none !important;
+    box-shadow: none !important;
   }
-
-  .card p {
-    margin: 6px 0;
+  .delete-btn {
+    background-color: #ffffff !important;
+    color: var(--danger) !important;
+    border: 1px solid var(--danger) !important;
+    cursor: pointer;
+  }
+  .delete-btn:hover, .delete-btn:active {
+    background-color: #ffffff !important;
+    color: var(--danger) !important;
+    transform: none !important;
+    box-shadow: none !important;
   }
 </style>
 

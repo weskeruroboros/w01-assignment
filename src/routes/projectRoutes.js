@@ -7,7 +7,8 @@ import {
   renderEditProjectForm,
   handleUpdateProject,
   renderAssignCategoriesForm,
-  handleAssignCategories
+  handleAssignCategories,
+  handleDeleteProject
 } from "../controllers/projectController.js";
 
 const router = express.Router();
@@ -22,5 +23,8 @@ router.post("/project/:id/edit", handleUpdateProject);
 
 router.get("/project/:id/assign-categories", renderAssignCategoriesForm);
 router.post("/project/:id/assign-categories", handleAssignCategories);
+
+// Delete route handler
+router.post("/project/:id/delete", handleDeleteProject);
 
 export default router;

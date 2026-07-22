@@ -1,7 +1,10 @@
 import pool from "../config/pool.js";
 
+/**
+ * Fetch all categories along with their associated projects as a JSON array.
+ */
 export async function getCategoriesFromDB() {
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `SELECT 
         c.category_id, 
         c.name,
@@ -15,58 +18,76 @@ export async function getCategoriesFromDB() {
      GROUP BY c.category_id, c.name
      ORDER BY c.name ASC;`
   );
-  return result.rows;
+  return rows;
 }
 
 // Export alias to satisfy projectController import
 export const getAllCategories = getCategoriesFromDB;
 
+/**
+ * Fetch a single category by its ID.
+ */
 export async function getCategoryByIdFromDB(categoryId) {
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `SELECT category_id, name 
      FROM categories 
      WHERE category_id = $1;`,
     [categoryId]
   );
-  return result.rows[0] || null;
+  return rows[0] || null;
 }
 
+/**
+ * Create a new category record.
+ */
 export async function createCategoryInDB(name) {
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `INSERT INTO categories (name)
      VALUES ($1)
      RETURNING category_id, name;`,
-    [name]
+    [name?.trim()]
   );
-  return result.rows[0];
+  return rows[0];
 }
 
+/**
+ * Update an existing category record.
+ */
 export async function updateCategoryInDB(categoryId, name) {
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `UPDATE categories
      SET name = $1
      WHERE category_id = $2
      RETURNING category_id, name;`,
-    [name, categoryId]
+    [name?.trim(), categoryId]
   );
-  return result.rows[0] || null;
+  return rows[0] || null;
 }
 
+/**
+ * Delete a category and its relationship links.
+ */
 export async function deleteCategoryFromDB(categoryId) {
   await pool.query(`DELETE FROM project_categories WHERE category_id = $1;`, [categoryId]);
   const result = await pool.query(`DELETE FROM categories WHERE category_id = $1;`, [categoryId]);
   return result.rowCount > 0;
 }
 
+/**
+ * Fetch all projects for selection views.
+ */
 export async function getAllProjectsForNewCategory() {
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `SELECT project_id, title FROM projects ORDER BY title ASC;`
   );
-  return result.rows;
+  return rows;
 }
 
+/**
+ * Fetch all projects with a selection flag for a given category.
+ */
 export async function getAllProjectsWithSelection(categoryId) {
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `SELECT p.project_id, p.title, 
             CASE WHEN pc.category_id IS NOT NULL THEN true ELSE false END AS is_checked
      FROM projects p
@@ -74,19 +95,24 @@ export async function getAllProjectsWithSelection(categoryId) {
      ORDER BY p.title ASC;`,
     [categoryId]
   );
-  return result.rows;
+  return rows;
 }
 
+/**
+ * Update projects linked to a specific category.
+ */
 export async function updateCategoryProjects(categoryId, projectIds = []) {
   await pool.query(`DELETE FROM project_categories WHERE category_id = $1;`, [categoryId]);
   
   if (projectIds) {
     const ids = Array.isArray(projectIds) ? projectIds : [projectIds];
     for (const projectId of ids) {
-      await pool.query(
-        `INSERT INTO project_categories (category_id, project_id) VALUES ($1, $2);`,
-        [categoryId, projectId]
-      );
+      if (projectId) {
+        await pool.query(
+          `INSERT INTO project_categories (category_id, project_id) VALUES ($1, $2);`,
+          [categoryId, projectId]
+        );
+      }
     }
   }
 }

@@ -1,8 +1,21 @@
 import pool from "../config/pool.js";
 
-// Fetch all projects with organization details and aggregated categories (formatted for pill tags)
+/**
+ * Sanitizes and trims project input payload.
+ */
+const sanitize = ({ title, organization_id, location, project_date, description }) => ({
+  title: title?.trim() ?? "",
+  organizationId: organization_id && organization_id !== "" ? organization_id : null,
+  location: location?.trim() || null,
+  projectDate: project_date?.trim() || null,
+  description: description?.trim() ?? ""
+});
+
+/**
+ * Fetch all projects with organization details and aggregated categories.
+ */
 export async function getAllProjects() {
-  const result = await pool.query(`
+  const { rows } = await pool.query(`
     SELECT
       p.project_id,
       p.title,
@@ -20,12 +33,14 @@ export async function getAllProjects() {
     GROUP BY p.project_id, o.name, o.organization_id
     ORDER BY p.project_date ASC;
   `);
-  return result.rows;
+  return rows;
 }
 
-// Fetch a single project by its ID
+/**
+ * Fetch a single project by its ID with organization details.
+ */
 export async function getProjectById(projectId) {
-  const result = await pool.query(`
+  const { rows } = await pool.query(`
     SELECT 
       p.project_id,
       p.title,
@@ -39,31 +54,32 @@ export async function getProjectById(projectId) {
     WHERE p.project_id = $1;
   `, [projectId]);
   
-  return result.rows[0] || null;
+  return rows[0] || null;
 }
 
-// Fetch categories linked to a specific project
+/**
+ * Fetch categories linked to a specific project.
+ */
 export async function getCategoriesByProject(projectId) {
-  const result = await pool.query(`
+  const { rows } = await pool.query(`
     SELECT c.category_id, c.name
     FROM categories c
     JOIN project_categories pc ON c.category_id = pc.category_id
     WHERE pc.project_id = $1;
   `, [projectId]);
   
-  return result.rows;
+  return rows;
 }
 
-// Transaction-safe update for assigning/unassigning categories
+/**
+ * Transaction-safe update for assigning/unassigning categories.
+ */
 export async function updateProjectCategories(projectId, categoryIds = []) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    
-    // Clear existing category assignments
     await client.query("DELETE FROM project_categories WHERE project_id = $1;", [projectId]);
 
-    // Insert new selected category assignments
     const ids = Array.isArray(categoryIds) ? categoryIds : [categoryIds];
     for (const catId of ids) {
       if (catId) {
@@ -83,35 +99,51 @@ export async function updateProjectCategories(projectId, categoryIds = []) {
   }
 }
 
-// Create a new project record with safe sanitization for empty strings
+/**
+ * Create a new project record.
+ */
 export async function createProject(projectData) {
-  const safeOrgId = projectData.organization_id && projectData.organization_id !== "" ? projectData.organization_id : null;
-  const safeLocation = projectData.location && projectData.location.trim() !== "" ? projectData.location.trim() : null;
-  const safeDate = projectData.project_date && projectData.project_date.trim() !== "" ? projectData.project_date : null;
-  const safeDescription = projectData.description ? projectData.description.trim() : "";
+  const { title, organizationId, location, projectDate, description } = sanitize(projectData);
 
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `INSERT INTO projects (title, organization_id, location, project_date, description) 
      VALUES ($1, $2, $3, $4, $5) 
      RETURNING *;`,
-    [projectData.title.trim(), safeOrgId, safeLocation, safeDate, safeDescription]
+    [title, organizationId, location, projectDate, description]
   );
-  return result.rows[0];
+  return rows[0];
 }
 
-// Update an existing project record with safe sanitization for empty strings
+/**
+ * Update an existing project record.
+ */
 export async function updateProject(projectId, projectData) {
-  const safeOrgId = projectData.organization_id && projectData.organization_id !== "" ? projectData.organization_id : null;
-  const safeLocation = projectData.location && projectData.location.trim() !== "" ? projectData.location.trim() : null;
-  const safeDate = projectData.project_date && projectData.project_date.trim() !== "" ? projectData.project_date : null;
-  const safeDescription = projectData.description ? projectData.description.trim() : "";
+  const { title, organizationId, location, projectDate, description } = sanitize(projectData);
 
-  const result = await pool.query(
+  const { rows } = await pool.query(
     `UPDATE projects 
      SET title = $1, organization_id = $2, location = $3, project_date = $4, description = $5 
      WHERE project_id = $6 
      RETURNING *;`,
-    [projectData.title.trim(), safeOrgId, safeLocation, safeDate, safeDescription, projectId]
+    [title, organizationId, location, projectDate, description, projectId]
   );
-  return result.rows[0];
+  return rows[0];
+}
+
+/**
+ * Delete a project and its associated category relations.
+ */
+export async function deleteProject(projectId) {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query("DELETE FROM project_categories WHERE project_id = $1;", [projectId]);
+    await client.query("DELETE FROM projects WHERE project_id = $1;", [projectId]);
+    await client.query("COMMIT");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
 }

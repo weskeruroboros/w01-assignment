@@ -1,18 +1,22 @@
 <%- include("partials/header") %>
 
 <main class="container" style="max-width: 900px; margin: 40px auto; padding: 0 15px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-    <h2 style="margin: 0; font-size: 1.75rem; font-weight: 700; color: #111827;">Organizations</h2>
-    <a href="/organizations/new" style="padding: 8px 16px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 0.9rem;">+ Add Organization</a>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <h2 style="margin: 0; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; color: var(--primary, #111827);">Organizations</h2>
+    <a href="/organizations/new" class="btn">+ Add Organization</a>
   </div>
 
+  <% if (typeof message !== "undefined" && message) { %>
+    <div class="alert alert-success"><%= message %></div>
+  <% } %>
+
   <% if (organizations && organizations.length > 0) { %>
-    <div style="display: grid; gap: 16px;">
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
       <% organizations.forEach(org => { %>
-        <div style="border: 1px solid #e5e7eb; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <div class="project-card" style="border: 1px solid var(--border-color, #e5e7eb); background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
           
           <!-- Side-by-side Layout: Image on the left, Content on the right -->
-          <div style="display: flex; gap: 20px; align-items: flex-start;">
+          <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
             
             <!-- Organization Thumbnail Image -->
             <img src="<%= org.image_url || '/images/home.jpg' %>" 
@@ -21,18 +25,18 @@
                  style="width: 110px; height: 110px; object-fit: cover; border-radius: 6px; flex-shrink: 0; border: 1px solid #f3f4f6;">
 
             <!-- Details Container -->
-            <div style="flex-grow: 1;">
+            <div style="flex-grow: 1; min-width: 200px;">
               <h3 style="margin: 0 0 8px 0; font-size: 1.25rem;">
-                <a href="/organizations/<%= org.organization_id %>" style="color: #2563eb; text-decoration: none; font-weight: 600;"><%= org.name %></a>
+                <a href="/organizations/<%= org.organization_id %>" style="color: var(--primary, #2563eb); text-decoration: none; font-weight: 600;"><%= org.name %></a>
               </h3>
-              <p style="margin: 0 0 10px 0; color: #4b5563; font-size: 0.95rem; line-height: 1.5;"><%= org.description || 'No description available.' %></p>
-              <p style="margin: 0 0 14px 0; color: #374151; font-size: 0.9rem;"><strong>Email:</strong> <%= org.email || 'N/A' %></p>
+              <p style="margin: 0 0 10px 0; color: var(--text-muted, #4b5563); font-size: 0.95rem; line-height: 1.5;"><%= org.description || 'No description available.' %></p>
+              <p style="margin: 0 0 14px 0; color: var(--text-main, #374151); font-size: 0.9rem;"><strong>Email:</strong> <%= org.email || 'N/A' %></p>
               
-              <!-- Action Links -->
-              <div style="display: flex; align-items: center; gap: 16px; border-top: 1px solid #f3f4f6; padding-top: 10px;">
-                <a href="/organizations/<%= org.organization_id %>/edit" style="color: #2563eb; font-size: 0.875rem; font-weight: 500; text-decoration: none;">Edit</a>
-                <form action="/organizations/<%= org.organization_id %>/delete" method="POST" style="display: inline; margin: 0; padding: 0; border: none; background: none;" onsubmit="return confirm('Are you sure you want to delete this organization?');">
-                  <button type="submit" style="background: none; border: none; outline: none; padding: 0; color: #dc2626; font-size: 0.875rem; font-weight: 500; cursor: pointer; text-decoration: underline;">Delete</button>
+              <!-- Action Buttons -->
+              <div class="card-actions" style="margin-top: 1rem; display: flex; gap: 0.75rem; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 12px;">
+                <a href="/organizations/<%= org.organization_id %>/edit" class="action-btn edit-btn">Edit</a>
+                <form action="/organizations/<%= org.organization_id %>/delete" method="POST" class="inline-form" style="margin: 0; padding: 0;">
+                  <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this organization?');">Delete</button>
                 </form>
               </div>
             </div>
@@ -43,8 +47,51 @@
       <% }) %>
     </div>
   <% } else { %>
-    <p style="color: #6b7280;">No organizations found.</p>
+    <p style="color: var(--text-muted, #6b7280); text-align: center; padding: 3rem 0;">No organizations found.</p>
   <% } %>
 </main>
+
+<style>
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 34px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: normal;
+    border-radius: var(--radius-sm, 6px);
+    box-sizing: border-box;
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .edit-btn {
+    background-color: #ffffff !important;
+    color: var(--accent, #2563eb) !important;
+    border: 1px solid var(--border-color, #cbd5e1) !important;
+    text-decoration: none !important;
+  }
+  .edit-btn:hover, .edit-btn:active {
+    background-color: #ffffff !important;
+    color: var(--accent, #2563eb) !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .delete-btn {
+    background-color: #ffffff !important;
+    color: var(--danger, #dc2626) !important;
+    border: 1px solid var(--danger, #dc2626) !important;
+    cursor: pointer;
+  }
+  .delete-btn:hover, .delete-btn:active {
+    background-color: #ffffff !important;
+    color: var(--danger, #dc2626) !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+</style>
 
 <%- include("partials/footer") %>
