@@ -1,40 +1,47 @@
 <%- include("partials/header") %>
 
-<h2>Add New Service Project</h2>
+<div class="container" style="max-width: 600px; margin: 40px auto; padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-family: system-ui, -apple-system, sans-serif;">
+  
+  <h2 style="margin-top: 0; color: #1e293b; font-size: 24px; font-weight: 700; margin-bottom: 20px;">Add New Service Project</h2>
 
-<form action="/projects" method="POST" class="form-container">
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="title">Project Title:</label>
-    <input type="text" id="title" name="title" required style="width: 100%; padding: 8px;">
-  </div>
+  <form action="/projects" method="POST" class="form-container">
+    <div class="form-group" style="margin-bottom: 16px;">
+      <label for="title" style="display: block; margin-bottom: 6px; font-weight: 500; color: #1e293b;">Project Title:</label>
+      <input type="text" id="title" name="title" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px;">
+    </div>
 
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="organization_id">Organization:</label>
-    <select id="organization_id" name="organization_id" required style="width: 100%; padding: 8px;">
-      <option value="">Select Organization</option>
-      <% organizations.forEach(org => { %>
-        <option value="<%= org.organization_id %>"><%= org.name %></option>
-      <% }) %>
-    </select>
-  </div>
+    <div class="form-group" style="margin-bottom: 16px;">
+      <label for="organization_id" style="display: block; margin-bottom: 6px; font-weight: 500; color: #1e293b;">Organization:</label>
+      <select id="organization_id" name="organization_id" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px; background-color: #ffffff;">
+        <option value="">Select Organization</option>
+        <% organizations.forEach(org => { %>
+          <option value="<%= org.organization_id %>"><%= org.name %></option>
+        <% }) %>
+      </select>
+    </div>
 
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="location">Location:</label>
-    <input type="text" id="location" name="location" style="width: 100%; padding: 8px;">
-  </div>
+    <div class="form-group" style="margin-bottom: 16px;">
+      <label for="location" style="display: block; margin-bottom: 6px; font-weight: 500; color: #1e293b;">Location:</label>
+      <input type="text" id="location" name="location" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px;">
+    </div>
 
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="project_date">Date:</label>
-    <input type="date" id="project_date" name="project_date" style="width: 100%; padding: 8px;">
-  </div>
+    <div class="form-group" style="margin-bottom: 16px;">
+      <label for="project_date" style="display: block; margin-bottom: 6px; font-weight: 500; color: #1e293b;">Date:</label>
+      <input type="date" id="project_date" name="project_date" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px;">
+    </div>
 
-  <div class="form-group" style="margin-bottom: 12px;">
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" rows="4" required style="width: 100%; padding: 8px;"></textarea>
-  </div>
+    <div class="form-group" style="margin-bottom: 24px;">
+      <label for="description" style="display: block; margin-bottom: 6px; font-weight: 500; color: #1e293b;">Description:</label>
+      <textarea id="description" name="description" rows="4" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 14px;"></textarea>
+    </div>
 
-  <button type="submit" class="btn btn-primary">Create Project</button>
-  <a href="/projects" class="btn btn-secondary">Cancel</a>
-</form>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <button type="submit" class="btn btn-primary" style="display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; background: #ffffff; color: #2563eb; border: 1px solid #2563eb; border-radius: 6px; font-weight: 500; font-size: 0.9rem; cursor: pointer; box-sizing: border-box; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#2563eb'; this.style.color='#ffffff'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.color='#2563eb'; this.style.transform='translateY(0)';">Create Project</button>
+      
+      <a href="/projects" class="btn btn-secondary" style="display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.9rem; box-sizing: border-box; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#f1f5f9'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.transform='translateY(0)';">Cancel</a>
+    </div>
+  </form>
+
+</div>
 
 <%- include("partials/footer") %>

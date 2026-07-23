@@ -23,8 +23,9 @@
     </div>
 
     <div style="display: flex; gap: 12px;">
-      <button type="submit" class="btn btn-primary" style="background-color: #2563eb; color: white; padding: 10px 20px; border-radius: 6px; border: none; font-weight: 500; cursor: pointer; font-size: 14px;">Save Categories</button>
-      <a href="/project/<%= project.project_id %>" class="btn btn-secondary" style="background-color: #e2e8f0; color: #475569; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 14px; display: inline-flex; align-items: center;">Cancel</a>
+      <button type="submit" class="btn btn-primary" style="display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; background: #ffffff; color: #2563eb; border: 1px solid #2563eb; border-radius: 6px; font-weight: 500; font-size: 0.9rem; cursor: pointer; box-sizing: border-box; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#2563eb'; this.style.color='#ffffff'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.color='#2563eb'; this.style.transform='translateY(0)';">Save Categories</button>
+      
+      <a href="/project/<%= project.project_id %>" class="btn btn-secondary" style="display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.9rem; box-sizing: border-box; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#f1f5f9'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ffffff'; this.style.transform='translateY(0)';">Cancel</a>
     </div>
 
   </form>

@@ -39,60 +39,11 @@
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.75rem;">Categories: None</p>
         <% } %>
 
-        <div class="card-actions" style="margin-top: 1.25rem; display: flex; gap: 0.75rem; align-items: center;">
-          <a href="/project/<%= p.project_id %>/edit" class="action-btn edit-btn">Edit</a>
-          <form action="/project/<%= p.project_id %>/delete" method="POST" class="inline-form" style="margin: 0; padding: 0;">
-            <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this project?');">Delete</button>
-          </form>
-        </div>
       </div>
     <% }) %>
   </div>
 <% } else { %>
   <p style="color: var(--text-muted); text-align: center; padding: 3rem 0;">No projects found.</p>
 <% } %>
-
-<style>
-  .action-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 90px;
-    height: 34px;
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 600;
-    line-height: normal;
-    border-radius: var(--radius-sm);
-    box-sizing: border-box;
-    transition: none !important;
-    transform: none !important;
-    box-shadow: none !important;
-  }
-  .edit-btn {
-    background-color: #ffffff !important;
-    color: var(--accent) !important;
-    border: 1px solid var(--border-color) !important;
-    text-decoration: none !important;
-  }
-  .edit-btn:hover, .edit-btn:active {
-    background-color: #ffffff !important;
-    color: var(--accent) !important;
-    transform: none !important;
-    box-shadow: none !important;
-  }
-  .delete-btn {
-    background-color: #ffffff !important;
-    color: var(--danger) !important;
-    border: 1px solid var(--danger) !important;
-    cursor: pointer;
-  }
-  .delete-btn:hover, .delete-btn:active {
-    background-color: #ffffff !important;
-    color: var(--danger) !important;
-    transform: none !important;
-    box-shadow: none !important;
-  }
-</style>
 
 <%- include("partials/footer") %>

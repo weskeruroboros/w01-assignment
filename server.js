@@ -4,10 +4,8 @@ import { fileURLToPath } from "url";
 import session from "express-session";
 import flash from "connect-flash";
 
-// Import Routes
-import categoryRoutes from "./src/routes/categoryRoutes.js";
-import organizationRoutes from "./src/routes/organizationRoutes.js";
-import projectRoutes from "./src/routes/projectRoutes.js";
+// Import Central Router
+import indexRouter from "./src/routes/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,15 +40,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Mount Routes
-app.use(categoryRoutes);
-app.use(organizationRoutes);
-app.use(projectRoutes);
-
-// Home Route
-app.get("/", (req, res) => {
-  res.render("home", { title: "Home" });
-});
+// Mount Central Router
+app.use(indexRouter);
 
 // Server Listener
 const PORT = process.env.PORT || 3000;

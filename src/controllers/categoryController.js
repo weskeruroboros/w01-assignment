@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import { 
   getCategoriesFromDB, 
   createCategoryInDB, 
@@ -20,6 +21,26 @@ export const getCategories = async (req, res) => {
   }
 };
 
+// Render category details page (Required by rubric)
+export const getCategoryDetails = async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+    const category = await getCategoryByIdFromDB(categoryId);
+    
+    if (!category) {
+      req.flash("error", "Category not found.");
+      return res.redirect("/categories");
+    }
+
+    const projects = await getAllProjectsWithSelection(categoryId);
+
+    res.render("categoryDetails", { title: "Category Details", category, projects });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
 // Render the form to create a new category
 export const getNewCategoryForm = async (req, res) => {
   try {
@@ -31,14 +52,26 @@ export const getNewCategoryForm = async (req, res) => {
   }
 };
 
-// Handle creation logic and redirect back to categories list page
+// Handle creation logic with express-validator integration
 export const createCategory = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    try {
+      const projects = await getAllProjectsForNewCategory();
+      return res.status(400).render("newCategory", { 
+        title: "Add New Category", 
+        errors: errors.array(), 
+        oldData: req.body,
+        projects 
+      });
+    } catch (renderErr) {
+      console.error(renderErr);
+      return res.status(500).send("Server Error");
+    }
+  }
+
   try {
     const { name, projects } = req.body;
-    if (!name || name.trim() === "") {
-      req.flash("error", "Category name is required.");
-      return res.redirect("back");
-    }
     const newCategory = await createCategoryInDB(name);
     
     if (newCategory && newCategory.category_id) {
@@ -74,16 +107,29 @@ export const getEditCategoryForm = async (req, res) => {
   }
 };
 
-// Handle update logic
+// Handle update logic with express-validator integration
 export const updateCategory = async (req, res) => {
-  try {
-    const categoryId = req.params.id;
-    const { name, projects } = req.body;
+  const errors = validationResult(req);
+  const categoryId = req.params.id;
 
-    if (!name || name.trim() === "") {
-      req.flash("error", "Category name is required.");
-      return res.redirect("back");
+  if (!errors.isEmpty()) {
+    try {
+      const category = await getCategoryByIdFromDB(categoryId);
+      const projects = await getAllProjectsWithSelection(categoryId);
+      return res.status(400).render("editCategory", { 
+        title: "Edit Category", 
+        errors: errors.array(), 
+        category: { ...category, ...req.body },
+        projects 
+      });
+    } catch (renderErr) {
+      console.error(renderErr);
+      return res.status(500).send("Server Error");
     }
+  }
+
+  try {
+    const { name, projects } = req.body;
 
     await updateCategoryInDB(categoryId, name);
     await updateCategoryProjects(categoryId, projects);
@@ -93,7 +139,7 @@ export const updateCategory = async (req, res) => {
   } catch (err) {
     console.error(err);
     req.flash("error", "Failed to update category.");
-    res.redirect(`/categories/${req.params.id}/edit`);
+    res.redirect(`/categories/${categoryId}/edit`);
   }
 };
 

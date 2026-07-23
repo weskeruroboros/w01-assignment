@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import { 
   getAllProjects, 
   getProjectById, 
@@ -10,16 +11,16 @@ import {
 import { getAllCategories } from "../models/categoryModel.js";
 import { getAllOrganizations } from "../models/organizationModel.js";
 
-export async function getProjects(req, res, next) {
+export const getProjects = async (req, res, next) => {
   try {
     const projects = await getAllProjects();
     res.render("projects", { title: "Service Projects", projects });
   } catch (error) { 
     next(error); 
   }
-}
+};
 
-export async function getProjectDetails(req, res, next) {
+export const getProjectDetails = async (req, res, next) => {
   try {
     const projectId = req.params.id;
 
@@ -47,18 +48,33 @@ export async function getProjectDetails(req, res, next) {
   } catch (error) { 
     next(error); 
   }
-}
+};
 
-export async function renderNewProjectForm(req, res, next) {
+export const renderNewProjectForm = async (req, res, next) => {
   try {
     const organizations = await getAllOrganizations();
-    res.render("newProject", { title: "Add Project", organizations });
+    res.render("newProject", { title: "Add Project", organizations, errors: [] });
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function handleCreateProject(req, res, next) {
+export const handleCreateProject = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    try {
+      const organizations = await getAllOrganizations();
+      return res.status(400).render("newProject", { 
+        title: "Add Project", 
+        organizations, 
+        errors: errors.array(), 
+        oldData: req.body 
+      });
+    } catch (orgErr) {
+      return next(orgErr);
+    }
+  }
+
   try {
     const { title, organization_id, location, project_date, description } = req.body;
     await createProject({ title, organization_id, location, project_date, description });
@@ -67,9 +83,9 @@ export async function handleCreateProject(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function renderEditProjectForm(req, res, next) {
+export const renderEditProjectForm = async (req, res, next) => {
   try {
     const projectId = req.params.id;
     const project = await getProjectById(projectId);
@@ -78,15 +94,32 @@ export async function renderEditProjectForm(req, res, next) {
       return res.redirect("/projects");
     }
     const organizations = await getAllOrganizations();
-    res.render("editProject", { title: `Edit ${project.title}`, project, organizations });
+    res.render("editProject", { title: `Edit ${project.title}`, project, organizations, errors: [] });
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function handleUpdateProject(req, res, next) {
+export const handleUpdateProject = async (req, res, next) => {
+  const errors = validationResult(req);
+  const projectId = req.params.id;
+
+  if (!errors.isEmpty()) {
+    try {
+      const project = await getProjectById(projectId);
+      const organizations = await getAllOrganizations();
+      return res.status(400).render("editProject", { 
+        title: `Edit ${project ? project.title : 'Project'}`, 
+        project: { ...project, ...req.body }, 
+        organizations, 
+        errors: errors.array() 
+      });
+    } catch (renderErr) {
+      return next(renderErr);
+    }
+  }
+
   try {
-    const projectId = req.params.id;
     const { title, organization_id, location, project_date, description } = req.body;
     await updateProject(projectId, { title, organization_id, location, project_date, description });
     req.flash("success", "Project updated successfully!");
@@ -94,9 +127,9 @@ export async function handleUpdateProject(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function handleDeleteProject(req, res, next) {
+export const handleDeleteProject = async (req, res, next) => {
   try {
     const projectId = req.params.id;
     if (isNaN(projectId)) {
@@ -111,9 +144,9 @@ export async function handleDeleteProject(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function renderAssignCategoriesForm(req, res, next) {
+export const renderAssignCategoriesForm = async (req, res, next) => {
   try {
     const projectId = req.params.id;
     if (isNaN(projectId)) {
@@ -141,9 +174,9 @@ export async function renderAssignCategoriesForm(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};
 
-export async function handleAssignCategories(req, res, next) {
+export const handleAssignCategories = async (req, res, next) => {
   try {
     const projectId = req.params.id;
     if (isNaN(projectId)) {
@@ -160,4 +193,4 @@ export async function handleAssignCategories(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
+};

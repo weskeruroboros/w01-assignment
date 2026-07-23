@@ -1,3 +1,4 @@
+import { validationResult } from "express-validator";
 import { 
   getOrganizationsFromDB, 
   getOrganizationByIdFromDB, 
@@ -43,14 +44,18 @@ export const getNewOrganizationForm = (req, res) => {
 };
 
 export const handleCreateOrganization = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("newOrganization", { 
+      title: "Add New Organization", 
+      errors: errors.array(), 
+      oldData: req.body 
+    });
+  }
+
   try {
     const { name, description, email } = req.body;
     const trimmedName = name ? name.trim() : "";
-
-    if (!trimmedName) {
-      req.flash("error", "Organization name is required.");
-      return res.redirect("/organizations/new");
-    }
 
     const safeDescription = description ? description.trim() : null;
     const safeEmail = email ? email.trim() : null;
@@ -80,21 +85,33 @@ export const renderEditOrganizationForm = async (req, res) => {
 };
 
 export const handleUpdateOrganization = async (req, res) => {
+  const errors = validationResult(req);
+  const organizationId = req.params.id;
+
+  if (!errors.isEmpty()) {
+    try {
+      const organization = await getOrganizationByIdFromDB(organizationId);
+      return res.status(400).render("editOrganization", { 
+        title: "Edit Organization", 
+        errors: errors.array(), 
+        organization: { ...organization, ...req.body } 
+      });
+    } catch (renderErr) {
+      console.error("Error rendering edit form on validation failure:", renderErr);
+      return res.status(500).send("Server Error");
+    }
+  }
+
   try {
     const { name, description, email, image_url } = req.body;
     const trimmedName = name ? name.trim() : "";
-
-    if (!trimmedName) {
-      req.flash("error", "Organization name is required.");
-      return res.redirect(`/organizations/${req.params.id}/edit`);
-    }
 
     const safeDescription = description ? description.trim() : null;
     const safeEmail = email ? email.trim() : null;
     const safeImageUrl = image_url && image_url.trim() !== "" ? image_url.trim() : "/images/home.jpg";
 
     await updateOrganizationInDB(
-      req.params.id, 
+      organizationId, 
       trimmedName, 
       safeDescription, 
       safeEmail, 
@@ -106,7 +123,7 @@ export const handleUpdateOrganization = async (req, res) => {
   } catch (err) {
     console.error("Error updating organization:", err);
     req.flash("error", "Failed to update organization.");
-    res.redirect(`/organizations/${req.params.id}/edit`);
+    res.redirect(`/organizations/${organizationId}/edit`);
   }
 };
 
